@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.com.android.application)
@@ -27,19 +29,69 @@ android {
 
     buildTypes {
 
+        val remoteDataSourceApiBaseUrl: String = gradleLocalProperties(rootDir)
+            .getProperty("REMOTE_DATA_SOURCE_API_BASE_URL")
+
+        val remoteDataSourceApiKey: String = gradleLocalProperties(rootDir)
+            .getProperty("REMOTE_DATA_SOURCE_API_KEY")
+
+        val remoteDataSourceApiAppId: String = gradleLocalProperties(rootDir)
+            .getProperty("REMOTE_DATA_SOURCE_API_APP_ID")
+
         debug {
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_BASE_URL",
+                remoteDataSourceApiBaseUrl
+            )
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_KEY",
+                remoteDataSourceApiKey
+            )
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_APP_ID",
+                remoteDataSourceApiAppId
+            )
+
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
 
         release {
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_BASE_URL",
+                remoteDataSourceApiBaseUrl
+            )
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_KEY",
+                remoteDataSourceApiKey
+            )
+
+            buildConfigField(
+                "String",
+                "REMOTE_DATA_SOURCE_API_APP_ID",
+                remoteDataSourceApiAppId
+            )
+
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
 
     }
@@ -92,11 +144,6 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
 
-    testImplementation(libs.junit)
-
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
@@ -135,6 +182,14 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+
+    // Testing
+
+    testImplementation(libs.junit)
+    testImplementation(libs.assertk)
+
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
 
 }
 
