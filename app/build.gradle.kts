@@ -187,9 +187,12 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
+    androidTestImplementation(libs.app.cash.turbine)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.assertk)
+    androidTestImplementation(libs.app.cash.turbine)
 
 }
 

@@ -1,8 +1,8 @@
-package com.stoyanvuchev.kodaschool.recipeapp.data.remote.response
+package com.stoyanvuchev.kodaschool.recipeapp.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class RecipeResponseIngredient(
+data class RecipeIngredient(
     @SerializedName("food")
     val food: String,
     @SerializedName("measure")
