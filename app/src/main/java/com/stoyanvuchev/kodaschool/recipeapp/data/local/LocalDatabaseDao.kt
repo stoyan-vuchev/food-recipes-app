@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
 import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
 import kotlinx.coroutines.flow.Flow
@@ -16,12 +16,15 @@ interface LocalDatabaseDao {
     suspend fun insertRecipes(recipes: List<RecipeEntity>)
 
     @Query("SELECT * FROM recipes_table WHERE category = :category")
-    fun getRecipesByCategory(category: RecipesCategory): Flow<List<RecipeEntity>>
+    suspend fun getRecipesByCategory(category: RecipesCategory): List<RecipeEntity>
+
+    @Query("SELECT * FROM recipes_table WHERE category = :category")
+    fun observeRecipesByCategory(category: RecipesCategory): Flow<List<RecipeEntity>>
 
     @Query("SELECT * FROM recipes_table WHERE recipe_id = :recipeId LIMIT 1")
-    suspend fun getRecipeById(recipeId: String): RecipeEntity
+    suspend fun getRecipeById(recipeId: String): RecipeEntity?
 
-    @Update
-    suspend fun updateRecipeById(recipeEntity: RecipeEntity)
+    @Upsert
+    suspend fun upsertRecipe(recipeEntity: RecipeEntity)
 
 }
