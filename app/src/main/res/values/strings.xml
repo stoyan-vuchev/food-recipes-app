@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Food Recipes</string>
     <string name="something_went_wrong">Something went wrong.</string>
+    <string name="home_screen_label">Home</string>
+    <string name="search_screen_label">Search</string>
+    <string name="saved_screen_label">Saved</string>
 </resources>

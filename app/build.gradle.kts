@@ -128,13 +128,11 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.google.android.material)
     implementation(libs.activity.compose)
-
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
 
     // Jetpack Compose
 
@@ -187,12 +185,15 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
-    androidTestImplementation(libs.app.cash.turbine)
 
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.app.cash.turbine)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     androidTestImplementation(libs.assertk)
     androidTestImplementation(libs.app.cash.turbine)
+    androidTestImplementation(libs.androidx.navigation.testing)
 
 }
 
