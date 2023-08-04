@@ -7,8 +7,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
+import com.stoyanvuchev.kodaschool.recipeapp.core.utils.Result
+import com.stoyanvuchev.kodaschool.recipeapp.core.utils.UiString
+import com.stoyanvuchev.kodaschool.recipeapp.data.repository.RecipesFakeRepository
 import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
+import com.stoyanvuchev.kodaschool.recipeapp.domain.repository.RecipesRepository
+import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -23,65 +27,22 @@ class LocalDatabaseTest {
 
     private lateinit var dao: LocalDatabaseDao
     private lateinit var database: LocalDatabase
+    private lateinit var repository: RecipesRepository
     private lateinit var scope: TestScope
-    private val recipeEntities = listOf(
-        RecipeEntity(
-            recipeId = "recipe_d04a8f9d3b6662a802c17e1a2e5f0f1b",
-            isBookmarked = false,
-            bookmarkTimestamp = null,
-            label = "",
-            category = RecipesCategory.Breakfast,
-            source = "",
-            ingredients = emptyList(),
-            url = "",
-            imageThumbnail = "",
-            imageSmall = "",
-            imageRegular = "",
-            imageLarge = ""
-        ),
-        RecipeEntity(
-            recipeId = "recipe_afe7f762a186efb95475c6c29d5da39b",
-            isBookmarked = false,
-            bookmarkTimestamp = null,
-            label = "",
-            category = RecipesCategory.Lunch,
-            source = "",
-            ingredients = emptyList(),
-            url = "",
-            imageThumbnail = "",
-            imageSmall = "",
-            imageRegular = "",
-            imageLarge = ""
-        ),
-        RecipeEntity(
-            recipeId = "recipe_452e9fce1999537b9e5698fda667c75f",
-            isBookmarked = false,
-            bookmarkTimestamp = null,
-            label = "",
-            category = RecipesCategory.Dinner,
-            source = "",
-            ingredients = emptyList(),
-            url = "",
-            imageThumbnail = "",
-            imageSmall = "",
-            imageRegular = "",
-            imageLarge = ""
-        )
-    )
+    private val fakeRecipes = RecipesFakeRepository.fakeRecipes
 
     @Before
     fun setUp() {
-
-        val context = ApplicationProvider.getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(
-            context.applicationContext,
+            ApplicationProvider.getApplicationContext<Context>().applicationContext,
             LocalDatabase::class.java
         ).build()
         dao = database.dao
+        repository = RecipesFakeRepository(dao)
 
         scope = TestScope(StandardTestDispatcher())
         scope.launch {
-            dao.insertRecipes(recipeEntities)
+            dao.insertRecipes(fakeRecipes)
         }
 
     }
@@ -92,23 +53,28 @@ class LocalDatabaseTest {
     }
 
     @Test
-    fun getRecipeById() = scope.runTest {
+    fun getRecipesByCategory() = scope.runTest {
 
-        val expected = recipeEntities.first()
-        val actual = dao.getRecipeById(expected.recipeId)
+        val category = RecipesCategory.Breakfast
+        val expected = fakeRecipes.filter { it.category == category }.map { it.toRecipeModel() }
 
-        assertThat(actual).isEqualTo(expected)
+        repository.getRecipesByCategory(category).test {
+            assertThat(awaitItem()).isEqualTo(expected)
+        }
 
     }
 
     @Test
-    fun getRecipesByCategory() = scope.runTest {
+    fun getRecipeById() = scope.runTest {
 
-        val category = RecipesCategory.Breakfast
-        val expected = recipeEntities.filter { it.category == category }
+        val expected = fakeRecipes.first().toRecipeModel()
 
-        dao.getRecipesByCategory(category).test {
-            assertThat(awaitItem()).isEqualTo(expected)
+        repository.getRecipeById(expected.recipeId).test {
+            when (val actual = awaitItem()) {
+                is Result.Loading -> Unit
+                is Result.Success -> assertThat(actual).isEqualTo(expected)
+                is Result.Error -> throwException(actual.error)
+            }
         }
 
     }
@@ -116,12 +82,29 @@ class LocalDatabaseTest {
     @Test
     fun updateRecipeById() = scope.runTest {
 
-        val expected = recipeEntities.first().copy(isBookmarked = true)
-        dao.updateRecipeById(expected)
+        val expected = fakeRecipes.first().copy(isBookmarked = true).toRecipeModel()
+        repository.updateRecipe(expected)
 
-        val actual = dao.getRecipeById(expected.recipeId)
-        assertThat(actual).isEqualTo(expected)
+        repository.updateRecipe(expected).test {
+            when (val actual = awaitItem()) {
+                is Result.Loading -> Unit
+                is Result.Success -> this.cancelAndConsumeRemainingEvents()
+                is Result.Error -> throwException(actual.error)
+            }
+        }
+
+        repository.getRecipeById(expected.recipeId).test {
+            when (val actual = awaitItem()) {
+                is Result.Loading -> Unit
+                is Result.Success -> assertThat(actual).isEqualTo(expected)
+                is Result.Error -> throwException(actual.error)
+            }
+        }
 
     }
+
+    private fun throwException(uiString: UiString): Nothing = throw Exception(
+        uiString.asString(ApplicationProvider.getApplicationContext())
+    )
 
 }
