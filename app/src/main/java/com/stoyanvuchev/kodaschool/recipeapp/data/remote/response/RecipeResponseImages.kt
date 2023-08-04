@@ -2,7 +2,7 @@ package com.stoyanvuchev.kodaschool.recipeapp.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class RecipeResponseImageImages(
+data class RecipeResponseImages(
     @SerializedName("LARGE")
     val large: RecipeResponseImage,
     @SerializedName("REGULAR")
