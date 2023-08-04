@@ -1,4 +1,4 @@
-package com.stoyanvuchev.kodaschool.recipeapp.ui.theme
+package com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme
 
 import android.app.Activity
 import android.os.Build

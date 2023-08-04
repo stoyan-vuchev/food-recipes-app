@@ -1,4 +1,4 @@
-package com.stoyanvuchev.kodaschool.recipeapp.ui.theme
+package com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
