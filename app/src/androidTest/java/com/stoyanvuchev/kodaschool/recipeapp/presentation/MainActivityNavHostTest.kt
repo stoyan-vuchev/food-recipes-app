@@ -8,7 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.accompanist.navigation.animation.AnimatedComposeNavigator
-import com.stoyanvuchev.kodaschool.recipeapp.ui.theme.FoodRecipesTheme
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule

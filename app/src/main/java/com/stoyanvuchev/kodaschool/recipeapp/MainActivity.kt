@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.MainActivityNavHost
-import com.stoyanvuchev.kodaschool.recipeapp.ui.theme.FoodRecipesTheme
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
