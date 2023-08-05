@@ -230,5 +230,5 @@ fun darkColors(
     outlineVariant = outlineVariant
 )
 
-/** CompositionLocal used to pass [Colors] down the composition for consumption. */
+/** CompositionLocal key used to pass [Colors] down the composition for consumption. */
 val LocalColors = staticCompositionLocalOf { lightColors() }
