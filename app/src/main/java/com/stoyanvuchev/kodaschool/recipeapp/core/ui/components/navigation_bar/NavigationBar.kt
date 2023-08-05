@@ -15,6 +15,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 
 /**
  * A navigation bar component displaying [NavigationBarItem]s for each navigation destination.
@@ -41,7 +42,10 @@ fun NavigationBar(
             .then(Modifier.windowInsetsPadding(windowInsets)),
         content = {
 
-            Divider(color = colors.separatorColor)
+            Divider(
+                color = ComponentsTokens.SeparatorColor,
+                thickness = ComponentsTokens.SeparatorThickness
+            )
 
             CompositionLocalProvider(
                 LocalNavigationBarColors provides colors,

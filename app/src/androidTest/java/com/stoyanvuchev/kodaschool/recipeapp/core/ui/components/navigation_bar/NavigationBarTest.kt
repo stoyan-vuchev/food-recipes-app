@@ -47,6 +47,8 @@ class NavigationBarTest {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    containerColor = Theme.colors.background,
+                    contentColor = Theme.colors.onBackground,
                     bottomBar = {
 
                         NavigationBar {
