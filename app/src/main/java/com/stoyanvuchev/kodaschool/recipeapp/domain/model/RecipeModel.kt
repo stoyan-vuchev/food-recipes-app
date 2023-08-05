@@ -5,16 +5,16 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
 
 @Stable
 data class RecipeModel(
-    val recipeId: String,
-    val isBookmarked: Boolean,
-    val bookmarkTimestamp: Long?,
-    val label: String,
-    val category: RecipesCategory,
-    val ingredients: List<RecipeIngredient>,
-    val source: String,
-    val url: String,
-    val imageThumbnail: String,
-    val imageSmall: String,
-    val imageRegular: String,
-    val imageLarge: String
+    val recipeId: String = "",
+    val isBookmarked: Boolean = false,
+    val bookmarkTimestamp: Long? = null,
+    val label: String = "",
+    val category: RecipesCategory = RecipesCategory.Default,
+    val ingredients: List<RecipeIngredient> = emptyList(),
+    val source: String = "",
+    val url: String = "",
+    val imageThumbnail: String = "",
+    val imageSmall: String = "",
+    val imageRegular: String = "",
+    val imageLarge: String = ""
 )

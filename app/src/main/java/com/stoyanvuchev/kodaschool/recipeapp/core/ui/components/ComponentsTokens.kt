@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 
@@ -51,5 +52,18 @@ object ComponentsTokens {
     val CategoryBarItemShape: Shape @Composable get() = Theme.shapes.extraLarge
     val CategoryBarItemTextStyle: TextStyle
         @Composable get() = Theme.typography.regularText.copy(fontWeight = FontWeight.SemiBold)
+
+    // Button
+
+    val ButtonBackgroundColor: Color @Composable get() = Theme.colors.primary
+    val ButtonContentColor: Color @Composable get() = Theme.colors.onPrimary
+    val ButtonDisabledBackgroundColor: Color @Composable get() = Theme.colors.background.copy(.16f)
+    val ButtonDisabledContentColor: Color @Composable get() = Theme.colors.onBackground.copy(.38f)
+    val ButtonShape: Shape @Composable get() = Theme.shapes.extraLarge
+    val ButtonHorizontalPadding: Dp get() = 16.0.dp
+    val ButtonVerticalPadding: Dp get() = 8.0.dp
+    val ButtonDefaultMinSize: DpSize get() = DpSize(width = 32.dp, height = 24.dp)
+    val ButtonTextStyle: TextStyle
+        @Composable get() = Theme.typography.regularText.copy(fontWeight = FontWeight.Medium)
 
 }

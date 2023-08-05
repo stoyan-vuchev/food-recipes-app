@@ -4,4 +4,6 @@
     <string name="home_screen_label">Home</string>
     <string name="search_screen_label">Search</string>
     <string name="saved_screen_label">Saved</string>
+    <string name="saved_recipe_button_label">Saved</string>
+    <string name="save_recipe_button_label">Save</string>
 </resources>

@@ -12,7 +12,7 @@ object LightColorsTokens {
     val OnPrimaryContainer: Color get() = ColorPaletteTokens.Primary10
     val Accent: Color get() = ColorPaletteTokens.Accent40
     val OnAccent: Color get() = ColorPaletteTokens.Accent100
-    val AccentContainer: Color get() = ColorPaletteTokens.Accent80
+    val AccentContainer: Color get() = ColorPaletteTokens.Accent95
     val OnAccentContainer: Color get() = ColorPaletteTokens.Accent10
     val Background: Color get() = ColorPaletteTokens.Background99
     val OnBackground: Color get() = ColorPaletteTokens.Background10
