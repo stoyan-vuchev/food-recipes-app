@@ -1,77 +1,93 @@
 package com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Pink40
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Pink80
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Purple40
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Purple80
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.PurpleGrey40
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.PurpleGrey80
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Typography
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color.Colors
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color.LocalColors
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color.darkColors
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color.lightColors
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color.updateColorsFrom
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.shape.LocalShapes
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.shape.Shapes
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.typography.LocalTypography
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.typography.Typography
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.typography.TypographyTokens
 
 @Composable
 fun FoodRecipesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    content: @Composable () -> Unit
+) = Theme(
+    darkTheme = darkTheme,
+    content = content
+)
+
+
+@Composable
+fun Theme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    colors: Colors = if (darkTheme) darkColors() else lightColors(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setStatusBarColor(
+            color = Color.Unspecified,
+            darkIcons = !darkTheme
+        )
+        systemUiController.setNavigationBarColor(
+            color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                Color.Unspecified
+            } else Color.Black.copy(alpha = .25f),
+            darkIcons = !darkTheme,
+            navigationBarContrastEnforced = false
+        )
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+    // Explicitly creating a new object so we don't mutate
+    // the initially provided colors, and overwrite the values.
+    val rememberedColors = remember { colors.copy() }.apply { updateColorsFrom(colors) }
+
+    CompositionLocalProvider(
+        LocalColors provides rememberedColors,
+        LocalTypography provides Typography(),
+        LocalShapes provides Shapes(),
+        LocalTextStyle provides TypographyTokens.RegularText,
+        content = { MaterialTheme(content = content) }
     )
+
+}
+
+/** A custom theme based on the design system and Material3 skeleton. */
+object Theme {
+
+    /** Retrieves the current [Colors] CompositionLocal key value. */
+    val colors: Colors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalColors.current
+
+    /** Retrieves the current [Typography] CompositionLocal key value. */
+    val typography: Typography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTypography.current
+
+    /** Retrieves the current [Shapes] CompositionLocal key value. */
+    val shapes: Shapes
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalShapes.current
+
 }

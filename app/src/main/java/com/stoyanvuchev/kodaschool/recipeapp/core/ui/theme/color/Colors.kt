@@ -123,6 +123,47 @@ class Colors(
     var outlineVariant by mutableStateOf(outlineVariant, structuralEqualityPolicy())
         internal set
 
+    /** Returns a copy of this [Colors] class, optionally overriding some of the values. */
+    fun copy(
+        primary: Color = this.primary,
+        onPrimary: Color = this.onPrimary,
+        primaryContainer: Color = this.primaryContainer,
+        onPrimaryContainer: Color = this.onPrimaryContainer,
+        accent: Color = this.accent,
+        onAccent: Color = this.onAccent,
+        accentContainer: Color = this.accentContainer,
+        onAccentContainer: Color = this.onAccentContainer,
+        background: Color = this.background,
+        onBackground: Color = this.onBackground,
+        backgroundContainer: Color = this.backgroundContainer,
+        onBackgroundContainer: Color = this.onBackgroundContainer,
+        error: Color = this.error,
+        onError: Color = this.onError,
+        errorContainer: Color = this.errorContainer,
+        onErrorContainer: Color = this.onErrorContainer,
+        outline: Color = this.outline,
+        outlineVariant: Color = this.outlineVariant
+    ): Colors = Colors(
+        primary = primary,
+        onPrimary = onPrimary,
+        primaryContainer = primaryContainer,
+        onPrimaryContainer = onPrimaryContainer,
+        accent = accent,
+        onAccent = onAccent,
+        accentContainer = accentContainer,
+        onAccentContainer = onAccentContainer,
+        background = background,
+        onBackground = onBackground,
+        backgroundContainer = backgroundContainer,
+        onBackgroundContainer = onBackgroundContainer,
+        error = error,
+        onError = onError,
+        errorContainer = errorContainer,
+        onErrorContainer = onErrorContainer,
+        outline = outline,
+        outlineVariant = outlineVariant
+    )
+
     override fun toString(): String {
         return "Colors(" +
                 "primary=$primary" +
@@ -232,3 +273,37 @@ fun darkColors(
 
 /** CompositionLocal key used to pass [Colors] down the composition for consumption. */
 val LocalColors = staticCompositionLocalOf { lightColors() }
+
+/**
+ * Updates the internal values of a given [Colors] with values from the [other] [Colors].
+ * This allows efficiently updating a subset of [Colors], without recomposing every
+ * composable that consumes values from [LocalColors].
+ *
+ * Because [Colors] is very wide-reaching, and used by many expensive composables in the
+ * hierarchy, providing a new value to [LocalColors] causes every composable consuming
+ * [LocalColors] to recompose, which is prohibitively expensive in cases such as animating one
+ * color in the theme. Instead, [Colors] is internally backed by [mutableStateOf], and this
+ * function mutates the internal state of [this] to match values in [other]. This means that any
+ * changes will mutate the internal state of [this], and only cause composables that are reading the
+ * specific changed value to recompose.
+ */
+internal fun Colors.updateColorsFrom(other: Colors) {
+    primary = other.primary
+    onPrimary = other.onPrimary
+    primaryContainer = other.primaryContainer
+    onPrimaryContainer = other.onPrimaryContainer
+    accent = other.accent
+    onAccent = other.onAccent
+    accentContainer = other.accentContainer
+    onAccentContainer = other.onAccentContainer
+    background = other.background
+    onBackground = other.onBackground
+    backgroundContainer = other.backgroundContainer
+    onBackgroundContainer = other.onBackgroundContainer
+    error = other.error
+    onError = other.onError
+    errorContainer = other.errorContainer
+    onErrorContainer = other.onErrorContainer
+    outline = other.outline
+    outlineVariant = other.outlineVariant
+}

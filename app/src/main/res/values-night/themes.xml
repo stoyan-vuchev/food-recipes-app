@@ -2,10 +2,10 @@
 <resources>
 
     <style name="Theme.FoodRecipes" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">#FFFEFBFF</item>
+        <item name="android:windowBackground">#FF1B1B1F</item>
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#40000000</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 </resources>
