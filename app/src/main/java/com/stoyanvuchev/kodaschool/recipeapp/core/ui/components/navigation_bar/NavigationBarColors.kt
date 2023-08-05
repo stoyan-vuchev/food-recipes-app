@@ -10,14 +10,12 @@ import androidx.compose.ui.graphics.Color
 /**
  * A custom colors set for styling the Navigation bar based on the design system and the Material3 skeleton.
  * @param backgroundColor The background color of the navigation bar.
- * @param separatorColor The color of the separator positioned at the top of the navigation bar.
  * @param selectedItemColor The color of the selected navigation bar item.
  * @param unselectedItemColor The color of the unselected navigation bar items.
  **/
 @Immutable
 class NavigationBarColors(
     val backgroundColor: Color,
-    val separatorColor: Color,
     private val selectedItemColor: Color,
     private val unselectedItemColor: Color
 ) {
@@ -35,7 +33,6 @@ class NavigationBarColors(
         if (this === other) return true
         if (other !is NavigationBarColors) return false
         if (backgroundColor != other.backgroundColor) return false
-        if (separatorColor != other.separatorColor) return false
         if (selectedItemColor != other.selectedItemColor) return false
         if (unselectedItemColor != other.unselectedItemColor) return false
         return true
@@ -43,7 +40,6 @@ class NavigationBarColors(
 
     override fun hashCode(): Int {
         var result = backgroundColor.hashCode()
-        result = 31 * result + separatorColor.hashCode()
         result = 31 * result + selectedItemColor.hashCode()
         result = 31 * result + unselectedItemColor.hashCode()
         return result
@@ -52,7 +48,6 @@ class NavigationBarColors(
     override fun toString(): String {
         return "NavigationBarColors(" +
                 "backgroundColor=$backgroundColor, " +
-                "separatorColor=$separatorColor, " +
                 "selectedItemColor=$selectedItemColor, " +
                 "unselectedItemColor=$unselectedItemColor" +
                 ")"

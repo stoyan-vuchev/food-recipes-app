@@ -22,12 +22,10 @@ object NavigationBarDefaults {
     @Composable
     fun colors(
         backgroundColor: Color = ComponentsTokens.NavigationBarBackgroundColor,
-        separatorColor: Color = ComponentsTokens.NavigationBarSeparatorColor,
         selectedItemColor: Color = ComponentsTokens.NavigationBarSelectedItemColor,
         unselectedItemColor: Color = ComponentsTokens.NavigationBarUnselectedItemColor
     ) = NavigationBarColors(
         backgroundColor = backgroundColor,
-        separatorColor = separatorColor,
         selectedItemColor = selectedItemColor,
         unselectedItemColor = unselectedItemColor
     )

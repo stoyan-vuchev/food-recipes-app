@@ -3,22 +3,26 @@ package com.stoyanvuchev.kodaschool.recipeapp.presentation
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
+import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
@@ -42,18 +46,38 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
                     Text(text = MainScreenDestinations.Home.label?.asString() ?: "")
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    val categories = listOf(
+                        RecipesCategory.Breakfast,
+                        RecipesCategory.Lunch,
+                        RecipesCategory.Dinner,
+                        RecipesCategory.Teatime,
+                        RecipesCategory.Snack
+                    )
 
-                    Button(
-                        modifier = Modifier.testTag("test_tag_go_to_search"),
-                        onClick = remember {
-                            {
-                                navController.navigate(
-                                    route = MainScreenDestinations.Search.route
-                                ) { launchSingleTop = true }
-                            }
-                        },
-                        content = { Text(text = "Go to Search") }
+                    var selectedCategory by remember { mutableStateOf(categories.first()) }
+                    val categoryBarState = rememberCategoryBarState()
+
+                    CategoryBar(
+                        state = categoryBarState,
+                        items = {
+
+                            items(
+                                items = categories,
+                                key = { "category_$it" },
+                                itemContent = { category ->
+
+                                    CategoryBarItemContent(
+                                        selected = selectedCategory == category,
+                                        onSelected = remember {
+                                            { selectedCategory = category }
+                                        },
+                                        label = category.name
+                                    )
+
+                                }
+                            )
+
+                        }
                     )
 
                 }

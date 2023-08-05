@@ -40,4 +40,7 @@ object MainScreenDestinations {
      **/
     val route: String get() = "main_screen_destinations_route"
 
+    /** The navigation destinations list for the navigation bar. */
+    val navigationBarDestinations: List<ScreenDestination> = listOf(Home, Search, Saved)
+
 }
