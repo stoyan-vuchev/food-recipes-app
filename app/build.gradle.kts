@@ -145,6 +145,10 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
+    // Squircle Shape
+
+    implementation(libs.stoyan.vuchev.squircle.shape)
+
     // Google Accompanist
 
     implementation(libs.google.accompanist.systemUiController)
