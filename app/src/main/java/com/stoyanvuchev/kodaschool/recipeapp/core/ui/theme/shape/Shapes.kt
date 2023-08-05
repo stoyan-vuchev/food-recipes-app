@@ -42,5 +42,5 @@ class Shapes(
 
 }
 
-/** CompositionLocal key to pass [Shapes] down the composition for consumption. */
+/** CompositionLocal key used for passing [Shapes] down the composition for consumption. */
 val LocalShapes = staticCompositionLocalOf { Shapes() }

@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
  * @param onError Use this color on top of the [error] color.
  * @param errorContainer Use this color as a background on components with an error.
  * @param onErrorContainer Use this color on top of the [errorContainer] color.
- * @param outline Use this color as a border color.
+ * @param outline Use this color as a border color or on non-emphasised components.
  * @param outlineVariant Use this color on separators.
  **/
 @Stable
@@ -115,7 +115,7 @@ class Colors(
     var onErrorContainer by mutableStateOf(onErrorContainer, structuralEqualityPolicy())
         internal set
 
-    /** Use this color as a border color. */
+    /** Use this color as a border color or on non-emphasised components. */
     var outline by mutableStateOf(outline, structuralEqualityPolicy())
         internal set
 
@@ -271,7 +271,7 @@ fun darkColors(
     outlineVariant = outlineVariant
 )
 
-/** CompositionLocal key used to pass [Colors] down the composition for consumption. */
+/** CompositionLocal key used for passing [Colors] down the composition for consumption. */
 val LocalColors = staticCompositionLocalOf { lightColors() }
 
 /**

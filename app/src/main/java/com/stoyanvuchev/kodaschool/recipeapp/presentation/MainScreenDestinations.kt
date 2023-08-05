@@ -10,21 +10,21 @@ object MainScreenDestinations {
     object Home : ScreenDestination(
         route = "main_home_route",
         label = UiString.FromResource(resId = R.string.home_screen_label),
-        icon = null // todo: Implement icon.
+        icon = R.drawable.home_icon
     )
 
     /** Represents the Search screen destination. */
     object Search : ScreenDestination(
         route = "main_search_route",
         label = UiString.FromResource(resId = R.string.search_screen_label),
-        icon = null // todo: Implement icon.
+        icon = R.drawable.search_icon
     )
 
     /** Represents the screen for Saved / Bookmarked screen destination.  */
     object Saved : ScreenDestination(
         route = "main_saved_route",
         label = UiString.FromResource(resId = R.string.saved_screen_label),
-        icon = null // todo: Implement icon.
+        icon = R.drawable.saved_icon
     )
 
     /**
