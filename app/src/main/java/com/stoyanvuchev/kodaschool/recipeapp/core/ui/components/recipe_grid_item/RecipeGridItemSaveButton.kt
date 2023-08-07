@@ -43,12 +43,12 @@ fun RecipeGridItemSaveButton(
     )
 
     val backgroundColor by stateTransition.animateColor(
-        targetValueByState = { if (it) Theme.colors.accent else Theme.colors.accentContainer },
+        targetValueByState = { if (it) Theme.colors.accent else Theme.colors.backgroundContainer },
         label = ""
     )
 
     val contentColor by stateTransition.animateColor(
-        targetValueByState = { if (it) Theme.colors.onAccent else Theme.colors.onAccentContainer },
+        targetValueByState = { if (it) Theme.colors.onAccent else Theme.colors.onBackgroundContainer },
         label = ""
     )
 
@@ -63,12 +63,12 @@ fun RecipeGridItemSaveButton(
         content = {
 
             Icon(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(14.dp),
                 painter = painterResource(id = R.drawable.saved_icon),
                 contentDescription = null
             )
 
-            Spacer(modifier = Modifier.width(ButtonDefaults.horizontalPadding * 0.67f))
+            Spacer(modifier = Modifier.width(ButtonDefaults.horizontalPadding * 0.75f))
 
             Text(
                 text = stringResource(
@@ -76,6 +76,8 @@ fun RecipeGridItemSaveButton(
                     else R.string.save_recipe_button_label
                 )
             )
+
+            Spacer(modifier = Modifier.width(ButtonDefaults.horizontalPadding * 0.25f))
 
         }
     )

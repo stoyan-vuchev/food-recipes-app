@@ -6,7 +6,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
-    suspend fun getRecipesByCategory(category: RecipesCategory): Flow<List<RecipeModel>>
+    suspend fun getRecipesByCategory(category: RecipesCategory): List<RecipeModel>
     suspend fun getRecipeById(recipeId: String): Flow<Result<RecipeModel>>
     suspend fun updateRecipe(recipeModel: RecipeModel): Flow<Result<Unit>>
 }

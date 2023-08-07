@@ -2,9 +2,9 @@ package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_ite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,14 +16,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
@@ -38,13 +41,15 @@ fun RecipeGridItem(
 ) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
+            .width(128.dp)
             .clip(Theme.shapes.medium)
             .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
                 onClick = onClick
             )
-            .then(modifier)
     ) {
 
         AsyncImage(
@@ -53,24 +58,32 @@ fun RecipeGridItem(
                 .aspectRatio(1f)
                 .clip(Theme.shapes.medium)
                 .background(color = Theme.colors.backgroundContainer),
-            model = recipe.imageSmall,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(recipe.thumbnail)
+                .crossfade(true)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
 
-        Text(
-            text = recipe.label,
-            style = Theme.typography.sectionTitle.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = Theme.colors.onBackground
-        )
+            Text(
+                text = recipe.label,
+                style = Theme.typography.sectionTitle.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = Theme.colors.onBackground
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        }
 
         RecipeGridItemSaveButton(
             saved = recipe.isBookmarked,
