@@ -11,8 +11,8 @@ import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 
 class RecipesRepositoryImpl @Inject constructor(
     private val api: RemoteDataSourceAPI,
@@ -21,16 +21,16 @@ class RecipesRepositoryImpl @Inject constructor(
 
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
-    ): Flow<List<RecipeModel>> {
-
-        if (dao.getRecipesByCategory(category).isEmpty()) {
-            getRecipesByCategoryFromRemoteDataSourceAPI(category)
+    ): List<RecipeModel> {
+        val cacheTime = System.currentTimeMillis() - 1.days.inWholeMilliseconds
+        val recipes = dao.getRecipesByCategory(category)
+        return if (
+            recipes.isNotEmpty() && recipes.first().timestamp > cacheTime
+        ) recipes.map { it.toRecipeModel() }
+        else when (val result = getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
+            is Result.Success -> result.data
+            else -> emptyList()
         }
-
-        return dao.observeRecipesByCategory(category).map {
-            it.map { entity -> entity.toRecipeModel() }
-        }
-
     }
 
     override suspend fun getRecipeById(
@@ -65,21 +65,25 @@ class RecipesRepositoryImpl @Inject constructor(
 
     private suspend fun getRecipesByCategoryFromRemoteDataSourceAPI(
         category: RecipesCategory
-    ): Result<Unit> = try {
+    ): Result<List<RecipeModel>> = try {
         val response = api.searchByCategory(category = category.stringValue)
         if (response.isSuccessful) {
 
             val responseBody = response.body()
             if (responseBody != null) {
 
-                val recipes = responseBody.hits.map { it.recipe.toRecipeEntity() }
-                dao.insertRecipes(recipes)
-
-                if (dao.getRecipesByCategory(category).isNotEmpty()) {
-                    Result.Success(Unit)
-                } else {
-                    Result.Error(Result.uiStringError())
+                val timestamp = System.currentTimeMillis()
+                val recipes = responseBody.hits.map {
+                    it.recipe.toRecipeEntity(timestamp, category)
                 }
+
+                try {
+                    dao.upsertRecipes(recipes)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                Result.Success(dao.getRecipesByCategory(category).map { it.toRecipeModel() })
 
             } else {
                 Result.Error(Result.uiStringError())
@@ -101,7 +105,8 @@ class RecipesRepositoryImpl @Inject constructor(
             val responseBody = response.body()
             if (responseBody != null) {
 
-                val recipeEntity = responseBody.toRecipeEntity()
+                val timestamp = System.currentTimeMillis()
+                val recipeEntity = responseBody.toRecipeEntity(timestamp)
                 dao.upsertRecipe(recipeEntity)
 
                 val entity = dao.getRecipeById(recipeId)

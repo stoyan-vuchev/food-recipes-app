@@ -1,5 +1,7 @@
 package com.stoyanvuchev.kodaschool.recipeapp.mappers
 
+import android.graphics.BitmapFactory
+import com.stoyanvuchev.kodaschool.recipeapp.core.utils.BitmapUtils.toByteArray
 import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 
@@ -15,13 +17,15 @@ fun RecipeEntity.toRecipeModel() = RecipeModel(
     imageThumbnail = imageThumbnail,
     imageSmall = imageSmall,
     imageRegular = imageRegular,
-    imageLarge = imageLarge
+    imageLarge = imageLarge,
+    thumbnail = thumbnail?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 )
 
 fun RecipeModel.toRecipeEntity() = RecipeEntity(
     recipeId = recipeId,
     isBookmarked = isBookmarked,
     bookmarkTimestamp = bookmarkTimestamp,
+    timestamp = timestamp,
     label = label,
     category = category,
     ingredients = ingredients,
@@ -30,5 +34,6 @@ fun RecipeModel.toRecipeEntity() = RecipeEntity(
     imageThumbnail = imageThumbnail,
     imageSmall = imageSmall,
     imageRegular = imageRegular,
-    imageLarge = imageLarge
+    imageLarge = imageLarge,
+    thumbnail = thumbnail.toByteArray()
 )

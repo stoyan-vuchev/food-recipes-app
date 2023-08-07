@@ -32,4 +32,16 @@ class LocalDatabaseTypeConverters {
         return Gson().fromJson(src, type)
     }
 
+    @TypeConverter
+    fun fromByteArrayToJson(src: ByteArray?): String {
+        val type = object : TypeToken<ByteArray?>() {}.type
+        return Gson().toJson(src, type)
+    }
+
+    @TypeConverter
+    fun fromJsonToByteArray(src: String): ByteArray? {
+        val type = object : TypeToken<ByteArray?>() {}.type
+        return Gson().fromJson(src, type)
+    }
+
 }

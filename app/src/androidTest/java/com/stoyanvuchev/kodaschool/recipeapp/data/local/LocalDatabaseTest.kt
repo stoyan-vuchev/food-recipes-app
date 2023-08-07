@@ -54,14 +54,10 @@ class LocalDatabaseTest {
 
     @Test
     fun getRecipesByCategory() = scope.runTest {
-
         val category = RecipesCategory.Breakfast
         val expected = fakeRecipes.filter { it.category == category }.map { it.toRecipeModel() }
-
-        repository.getRecipesByCategory(category).test {
-            assertThat(awaitItem()).isEqualTo(expected)
-        }
-
+        val actual = repository.getRecipesByCategory(category)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test

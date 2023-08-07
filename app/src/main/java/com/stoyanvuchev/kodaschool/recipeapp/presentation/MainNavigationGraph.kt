@@ -4,25 +4,24 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
-import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
@@ -36,51 +35,31 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
             route = MainScreenDestinations.Home.route,
             content = {
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag("test_tag_home_screen"),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                val viewModel = hiltViewModel<HomeScreenViewModel>()
+                val screenState by viewModel.state.collectAsStateWithLifecycle()
 
-                    Text(text = MainScreenDestinations.Home.label?.asString() ?: "")
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
 
-                    val categories = listOf(
-                        RecipesCategory.Breakfast,
-                        RecipesCategory.Lunch,
-                        RecipesCategory.Dinner,
-                        RecipesCategory.Teatime,
-                        RecipesCategory.Snack
-                    )
-
-                    var selectedCategory by remember { mutableStateOf(categories.first()) }
-                    val categoryBarState = rememberCategoryBarState()
-
-                    CategoryBar(
-                        state = categoryBarState,
-                        items = {
-
-                            items(
-                                items = categories,
-                                key = { "category_$it" },
-                                itemContent = { category ->
-
-                                    CategoryBarItemContent(
-                                        selected = selectedCategory == category,
-                                        onSelected = remember {
-                                            { selectedCategory = category }
-                                        },
-                                        label = category.name
+                            is HomeScreenUiAction.ViewRecipe -> navController.navigate(
+                                route = MainScreenDestinations.Recipe.route
+                                    .replace(
+                                        "{recipeId}",
+                                        uiAction.recipeId
                                     )
+                            ) { launchSingleTop = true }
 
-                                }
-                            )
+                            else -> Unit
 
                         }
-                    )
-
+                    }
                 }
+
+                HomeScreen(
+                    screenState = screenState,
+                    onUiAction = viewModel::onUiAction
+                )
 
             }
         )
@@ -127,7 +106,11 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
             arguments = listOf(
                 navArgument(name = "recipeId") { type = NavType.StringType }
             ),
-            content = { Text(text = MainScreenDestinations.Recipe.label?.asString() ?: "") }
+            content = {
+
+                Text(text = it.arguments?.getString("recipeId") ?: "Error")
+
+            }
         )
 
     }

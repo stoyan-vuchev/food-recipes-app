@@ -12,7 +12,6 @@ import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
 
 class RecipesFakeRepository(
     private val dao: LocalDatabaseDao
@@ -20,10 +19,8 @@ class RecipesFakeRepository(
 
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
-    ): Flow<List<RecipeModel>> {
-        return dao.observeRecipesByCategory(category).map {
-            it.map { entity -> entity.toRecipeModel() }
-        }
+    ): List<RecipeModel> {
+        return dao.getRecipesByCategory(category).map { it.toRecipeModel() }
     }
 
     override suspend fun getRecipeById(
@@ -69,6 +66,7 @@ class RecipesFakeRepository(
                 recipeId = "recipe_d04a8f9d3b6662a802c17e1a2e5f0f1b",
                 isBookmarked = false,
                 bookmarkTimestamp = null,
+                timestamp = 0L,
                 label = "",
                 category = RecipesCategory.Breakfast,
                 source = "",
@@ -77,12 +75,14 @@ class RecipesFakeRepository(
                 imageThumbnail = "",
                 imageSmall = "",
                 imageRegular = "",
-                imageLarge = ""
+                imageLarge = "",
+                thumbnail = null
             ),
             RecipeEntity(
                 recipeId = "recipe_afe7f762a186efb95475c6c29d5da39b",
                 isBookmarked = false,
                 bookmarkTimestamp = null,
+                timestamp = 0L,
                 label = "",
                 category = RecipesCategory.Lunch,
                 source = "",
@@ -91,12 +91,14 @@ class RecipesFakeRepository(
                 imageThumbnail = "",
                 imageSmall = "",
                 imageRegular = "",
-                imageLarge = ""
+                imageLarge = "",
+                thumbnail = null
             ),
             RecipeEntity(
                 recipeId = "recipe_452e9fce1999537b9e5698fda667c75f",
                 isBookmarked = false,
                 bookmarkTimestamp = null,
+                timestamp = 0L,
                 label = "",
                 category = RecipesCategory.Dinner,
                 source = "",
@@ -105,7 +107,8 @@ class RecipesFakeRepository(
                 imageThumbnail = "",
                 imageSmall = "",
                 imageRegular = "",
-                imageLarge = ""
+                imageLarge = "",
+                thumbnail = null
             )
         )
 

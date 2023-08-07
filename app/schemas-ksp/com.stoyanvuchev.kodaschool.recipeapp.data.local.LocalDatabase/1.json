@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d462e851ea6ca388deb9de23b6d854cd",
+    "identityHash": "7fa8b76b9c757ceb9839308eb6a24802",
     "entities": [
       {
         "tableName": "recipes_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`recipe_id` TEXT NOT NULL, `is_bookmarked` INTEGER NOT NULL, `bookmark_timestamp` INTEGER, `label` TEXT NOT NULL, `category` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `source` TEXT NOT NULL, `url` TEXT NOT NULL, `image_thumbnail` TEXT NOT NULL, `image_small` TEXT NOT NULL, `image_regular` TEXT NOT NULL, `image_large` TEXT NOT NULL, PRIMARY KEY(`recipe_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `recipe_id` TEXT NOT NULL, `is_bookmarked` INTEGER NOT NULL, `bookmark_timestamp` INTEGER, `timestamp` INTEGER NOT NULL, `label` TEXT NOT NULL, `category` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `source` TEXT NOT NULL, `url` TEXT NOT NULL, `image_thumbnail` TEXT NOT NULL, `image_small` TEXT NOT NULL, `image_regular` TEXT NOT NULL, `image_large` TEXT NOT NULL, `thumbnail` BLOB)",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "recipeId",
             "columnName": "recipe_id",
@@ -25,6 +31,12 @@
             "columnName": "bookmark_timestamp",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "label",
@@ -79,12 +91,18 @@
             "columnName": "image_large",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "thumbnail",
+            "columnName": "thumbnail",
+            "affinity": "BLOB",
+            "notNull": false
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
-            "recipe_id"
+            "id"
           ]
         },
         "indices": [],
@@ -94,7 +112,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd462e851ea6ca388deb9de23b6d854cd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7fa8b76b9c757ceb9839308eb6a24802')"
     ]
   }
 }

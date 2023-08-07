@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class RecipeResponseImages(
     @SerializedName("LARGE")
-    val large: RecipeResponseImage,
+    val large: RecipeResponseImage?,
     @SerializedName("REGULAR")
-    val regular: RecipeResponseImage,
+    val regular: RecipeResponseImage?,
     @SerializedName("SMALL")
-    val small: RecipeResponseImage,
+    val small: RecipeResponseImage?,
     @SerializedName("THUMBNAIL")
-    val thumbnail: RecipeResponseImage
+    val thumbnail: RecipeResponseImage?
 )
