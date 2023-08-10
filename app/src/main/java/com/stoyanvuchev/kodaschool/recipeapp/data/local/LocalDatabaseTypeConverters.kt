@@ -33,14 +33,14 @@ class LocalDatabaseTypeConverters {
     }
 
     @TypeConverter
-    fun fromByteArrayToJson(src: ByteArray?): String {
-        val type = object : TypeToken<ByteArray?>() {}.type
+    fun fromStringListToJson(src: List<String>): String {
+        val type = object : TypeToken<List<String>>() {}.type
         return Gson().toJson(src, type)
     }
 
     @TypeConverter
-    fun fromJsonToByteArray(src: String): ByteArray? {
-        val type = object : TypeToken<ByteArray?>() {}.type
+    fun fromJsonToStringList(src: String): List<String> {
+        val type = object : TypeToken<List<String>>() {}.type
         return Gson().fromJson(src, type)
     }
 

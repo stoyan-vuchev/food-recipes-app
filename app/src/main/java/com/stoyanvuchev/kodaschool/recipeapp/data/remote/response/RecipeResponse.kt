@@ -8,6 +8,8 @@ data class RecipeResponse(
     val images: RecipeResponseImages,
     @SerializedName("ingredients")
     val ingredients: List<RecipeIngredient>,
+    @SerializedName("instructions")
+    val instructions: ArrayList<String>?,
     @SerializedName("label")
     val label: String,
     @SerializedName("mealType")

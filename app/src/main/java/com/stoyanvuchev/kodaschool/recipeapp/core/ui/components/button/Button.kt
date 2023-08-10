@@ -89,7 +89,7 @@ fun Button(
         content = {
 
             Row(
-                modifier = Modifier
+                modifier = modifier
                     .defaultMinSize(
                         minWidth = ButtonDefaults.defaultMinSize.width,
                         minHeight = ButtonDefaults.defaultMinSize.height
@@ -104,8 +104,7 @@ fun Button(
                     .padding(
                         horizontal = ButtonDefaults.horizontalPadding,
                         vertical = ButtonDefaults.verticalPadding
-                    )
-                    .then(modifier),
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 content = content

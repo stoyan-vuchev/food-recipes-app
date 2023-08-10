@@ -15,6 +15,7 @@ data class RecipeModel(
     val label: String = "",
     val category: RecipesCategory = RecipesCategory.Default,
     val ingredients: List<RecipeIngredient> = emptyList(),
+    val instructions: List<String> = emptyList(),
     val source: String = "",
     val url: String = "",
     val imageThumbnail: String = "",

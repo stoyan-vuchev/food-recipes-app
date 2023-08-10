@@ -125,7 +125,7 @@ object ComponentsTokens {
     object TopBar {
 
         val smallContainerHeight: Dp = 64.0.dp
-        val largeContainerHeight: Dp = 128.0.dp
+        val largeContainerHeight: Dp = 150.0.dp
 
         val backgroundColor: Color @Composable get() = Theme.colors.background
         val contentColor: Color @Composable get() = Theme.colors.onBackground
