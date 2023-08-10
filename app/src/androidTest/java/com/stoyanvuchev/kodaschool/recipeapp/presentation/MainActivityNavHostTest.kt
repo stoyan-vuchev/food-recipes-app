@@ -1,13 +1,12 @@
 package com.stoyanvuchev.kodaschool.recipeapp.presentation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.accompanist.navigation.animation.AnimatedComposeNavigator
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -22,18 +21,15 @@ class MainActivityNavHostTest {
     val composeTestRule = createComposeRule()
     private lateinit var navController: TestNavHostController
 
-    // Setup the TestNavHostController and set MainActivityNavHost as the content.
-    @OptIn(ExperimentalAnimationApi::class)
     @Before
     fun setup() {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(AnimatedComposeNavigator())
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
             FoodRecipesTheme { MainActivityNavHost(navController = navController) }
         }
     }
 
-    // Verify whether the Home screen is displayed.
     @Test
     fun verifyStartDestinationIsDisplayed() = runTest {
         composeTestRule.onNodeWithTag("test_tag_home_screen").assertIsDisplayed()

@@ -1,6 +1,5 @@
 package com.stoyanvuchev.kodaschool.recipeapp.presentation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,15 +14,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.navigation
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
     navigation(

@@ -58,7 +58,7 @@ fun CategoryBar(
     modifier: Modifier = Modifier,
     state: CategoryBarState = rememberCategoryBarState(),
     colors: CategoryBarColors = CategoryBarDefaults.colors(),
-    horizontalContentPadding: Dp = ComponentsTokens.CategoryBarContainerHorizontalPadding,
+    horizontalContentPadding: Dp = ComponentsTokens.CategoryBar.containerHorizontalPadding,
     itemTextStyle: TextStyle = CategoryBarDefaults.itemTextStyle,
     itemShape: Shape = CategoryBarDefaults.itemShape,
     items: CategoryBarScope.() -> Unit
