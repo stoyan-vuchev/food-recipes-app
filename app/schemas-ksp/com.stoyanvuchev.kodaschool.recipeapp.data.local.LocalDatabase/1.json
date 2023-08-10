@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7fa8b76b9c757ceb9839308eb6a24802",
+    "identityHash": "2558ec20a8dffd738f37d30f3e266b80",
     "entities": [
       {
         "tableName": "recipes_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `recipe_id` TEXT NOT NULL, `is_bookmarked` INTEGER NOT NULL, `bookmark_timestamp` INTEGER, `timestamp` INTEGER NOT NULL, `label` TEXT NOT NULL, `category` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `source` TEXT NOT NULL, `url` TEXT NOT NULL, `image_thumbnail` TEXT NOT NULL, `image_small` TEXT NOT NULL, `image_regular` TEXT NOT NULL, `image_large` TEXT NOT NULL, `thumbnail` BLOB)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `recipe_id` TEXT NOT NULL, `is_bookmarked` INTEGER NOT NULL, `bookmark_timestamp` INTEGER, `timestamp` INTEGER NOT NULL, `last_viewed_timestamp` INTEGER, `label` TEXT NOT NULL, `category` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `source` TEXT NOT NULL, `url` TEXT NOT NULL, `image_thumbnail` TEXT NOT NULL, `image_small` TEXT NOT NULL, `image_regular` TEXT NOT NULL, `image_large` TEXT NOT NULL, `thumbnail` BLOB)",
         "fields": [
           {
             "fieldPath": "id",
@@ -37,6 +37,12 @@
             "columnName": "timestamp",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastViewedTimestamp",
+            "columnName": "last_viewed_timestamp",
+            "affinity": "INTEGER",
+            "notNull": false
           },
           {
             "fieldPath": "label",
@@ -112,7 +118,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7fa8b76b9c757ceb9839308eb6a24802')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2558ec20a8dffd738f37d30f3e266b80')"
     ]
   }
 }

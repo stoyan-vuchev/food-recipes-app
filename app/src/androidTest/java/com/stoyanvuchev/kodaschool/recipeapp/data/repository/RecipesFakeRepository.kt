@@ -33,7 +33,7 @@ class RecipesFakeRepository(
                 trySend(Result.Success(entity.toRecipeModel()))
             } else {
 
-                dao.upsertRecipe(fakeRecipes.find { it.recipeId == recipeId }!!)
+                dao.updateRecipe(fakeRecipes.find { it.recipeId == recipeId }!!)
 
                 val newEntity = dao.getRecipeById(recipeId)
                 if (newEntity != null) trySend(Result.Success(newEntity.toRecipeModel()))
@@ -51,7 +51,7 @@ class RecipesFakeRepository(
     ): Flow<Result<Unit>> = callbackFlow {
         trySend(Result.Loading())
         try {
-            dao.upsertRecipe(recipeModel.toRecipeEntity())
+            dao.updateRecipe(recipeModel.toRecipeEntity())
             trySend(Result.Success(Unit))
         } catch (e: Exception) {
             trySend(Result.Error(uiStringError(e.message)))

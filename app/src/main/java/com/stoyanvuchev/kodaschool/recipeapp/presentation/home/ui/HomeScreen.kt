@@ -2,6 +2,9 @@ package com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,9 +20,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
@@ -34,19 +41,27 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenState
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
     screenState: HomeScreenState,
+    recentRecipes: List<RecipeModel>,
+    categorizedRecipes: List<RecipeModel>,
     onUiAction: (HomeScreenUiAction) -> Unit
 ) {
 
     val categoryBarState = rememberCategoryBarState()
+    val recentLazyListState = rememberLazyListState()
     val categoryLazyListState = rememberLazyListState()
 
     BackHandler(
         enabled = screenState.category != screenState.categories.first(),
         onBack = { onUiAction(HomeScreenUiAction.SetCategory(screenState.categories.first())) }
     )
+
+    LaunchedEffect(key1 = recentRecipes) {
+        recentLazyListState.animateScrollToItem(0, 0)
+    }
 
     LaunchedEffect(key1 = screenState.category) {
         categoryBarState.animateScrollToItem(
@@ -68,10 +83,80 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(64.dp))
 
+        AnimatedContent(
+            targetState = recentRecipes.isNotEmpty(),
+            label = ""
+        ) {
+
+            if (it) {
+
+                Column {
+
+                    Text(
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        text = "Recently viewed",
+                        style = Theme.typography.sectionTitle.copy(fontWeight = FontWeight.Bold),
+                        color = Theme.colors.onBackground
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    LazyRow(
+                        modifier = Modifier.fadingEdges(),
+                        state = recentLazyListState,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(horizontal = 32.dp)
+                    ) {
+
+                        items(
+                            items = recentRecipes,
+                            key = { "recent_recipe_${it.recipeId}" }
+                        ) { recipe ->
+
+                            var isBookmarked by remember { mutableStateOf(recipe.isBookmarked) }
+
+                            RecipeGridItem(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItemPlacement(),
+                                recipe = recipe,
+                                enabled = true,
+                                onSave = remember {
+                                    {
+                                        isBookmarked = !isBookmarked
+                                        onUiAction(
+                                            HomeScreenUiAction.SaveOrRemoveRecipe(
+                                                recipeId = recipe.recipeId,
+                                                saved = isBookmarked
+                                            )
+                                        )
+                                    }
+                                },
+                                onClick = remember {
+                                    {
+                                        onUiAction(
+                                            HomeScreenUiAction.ViewRecipe(recipeId = recipe.recipeId)
+                                        )
+                                    }
+                                }
+                            )
+
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                }
+
+            }
+
+        }
+
         Text(
             modifier = Modifier.padding(horizontal = 32.dp),
             text = "Category",
-            style = Theme.typography.sectionTitle,
+            style = Theme.typography.sectionTitle.copy(fontWeight = FontWeight.Bold),
             color = Theme.colors.onBackground
         )
 
@@ -111,14 +196,19 @@ fun HomeScreen(
             userScrollEnabled = !screenState.isLoadingCategory
         ) {
 
+
             if (screenState.isLoadingCategory) {
 
                 items(
-                    count = 5,
+                    count = 20,
                     key = { "item_$it" },
                     itemContent = {
 
-                        RecipeGridItemLoadingShimmer(modifier = Modifier.fillMaxWidth())
+                        RecipeGridItemLoadingShimmer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItemPlacement()
+                        )
 
                     }
                 )
@@ -126,20 +216,25 @@ fun HomeScreen(
             } else {
 
                 items(
-                    items = screenState.categoryRecipesList,
-                    key = { "recipe_$it" }
+                    items = categorizedRecipes,
+                    key = { "recipe_${it.recipeId}" }
                 ) { recipe ->
 
+                    var isBookmarked by remember { mutableStateOf(recipe.isBookmarked) }
+
                     RecipeGridItem(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItemPlacement(),
                         recipe = recipe,
                         enabled = true,
                         onSave = remember {
                             {
+                                isBookmarked = !isBookmarked
                                 onUiAction(
                                     HomeScreenUiAction.SaveOrRemoveRecipe(
                                         recipeId = recipe.recipeId,
-                                        saved = recipe.isBookmarked
+                                        saved = isBookmarked
                                     )
                                 )
                             }
@@ -168,15 +263,15 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     FoodRecipesTheme {
         HomeScreen(
-            screenState = HomeScreenState(
-                categoryRecipesList = listOf(
-                    RecipeModel(recipeId = "0"),
-                    RecipeModel(recipeId = "1"),
-                    RecipeModel(recipeId = "2"),
-                    RecipeModel(recipeId = "3"),
-                    RecipeModel(recipeId = "4"),
-                )
+            screenState = HomeScreenState(),
+            recentRecipes = listOf(
+                RecipeModel(recipeId = "0"),
+                RecipeModel(recipeId = "1"),
+                RecipeModel(recipeId = "2"),
+                RecipeModel(recipeId = "3"),
+                RecipeModel(recipeId = "4"),
             ),
+            categorizedRecipes = emptyList(),
             onUiAction = {}
         )
     }

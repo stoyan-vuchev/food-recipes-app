@@ -21,6 +21,10 @@ data class RecipeEntity(
     val bookmarkTimestamp: Long?,
 
     val timestamp: Long,
+
+    @ColumnInfo(name = "last_viewed_timestamp")
+    val lastViewedTimestamp: Long?,
+
     val label: String,
     val category: RecipesCategory,
     val ingredients: List<RecipeIngredient>,

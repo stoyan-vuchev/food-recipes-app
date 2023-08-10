@@ -1,6 +1,7 @@
 package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item
 
 import androidx.compose.animation.animateColor
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -43,12 +44,16 @@ fun RecipeGridItemSaveButton(
     )
 
     val backgroundColor by stateTransition.animateColor(
-        targetValueByState = { if (it) Theme.colors.accent else Theme.colors.backgroundContainer },
+        targetValueByState = {
+            if (it) Theme.colors.accentContainer else Theme.colors.backgroundContainer
+        },
         label = ""
     )
 
     val contentColor by stateTransition.animateColor(
-        targetValueByState = { if (it) Theme.colors.onAccent else Theme.colors.onBackgroundContainer },
+        targetValueByState = {
+            if (it) Theme.colors.onAccentContainer else Theme.colors.onBackgroundContainer
+        },
         label = ""
     )
 
@@ -71,6 +76,7 @@ fun RecipeGridItemSaveButton(
             Spacer(modifier = Modifier.width(ButtonDefaults.horizontalPadding * 0.75f))
 
             Text(
+                modifier = Modifier.animateContentSize(),
                 text = stringResource(
                     id = if (saved) R.string.saved_recipe_button_label
                     else R.string.save_recipe_button_label
