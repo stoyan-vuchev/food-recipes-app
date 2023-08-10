@@ -2,24 +2,24 @@
 
 # Gradle
 agp = "8.1.0"
-org-jetbrains-kotlin-android = "1.8.22"
+org-jetbrains-kotlin-android = "1.9.0"
 
 # Annotations Procesing
-org-jetbrains-kotlin-kapt = "1.8.22"
-ksp = "1.8.22-1.0.11"
+org-jetbrains-kotlin-kapt = "1.9.0"
+ksp = "1.9.0-1.0.13"
 
 # Core
 core-ktx = "1.10.1"
 appcompat = "1.6.1"
-androidx-navigation = "2.6.0"
+androidx-navigation = "2.7.0"
 activity-compose = "1.7.2"
 lifecycle-runtime-ktx = "2.6.1"
 lifecycle-runtime-compose = "2.6.1"
 google-android-material = "1.9.0"
 
 # Compose
-compose-bom = "2023.06.01"
-compose-compiler = "1.4.8"
+compose-bom = "2023.08.00"
+compose-compiler = "1.5.1"
 
 # Squircle Shape
 stoyan-vuchev-squircle-shape = "1.0.3"
@@ -35,7 +35,7 @@ datastore = "1.0.0"
 room = "2.5.2"
 
 # DI
-dagger-hilt = "2.46.1"
+dagger-hilt = "2.47"
 androidx-hilt-navigation-compose = "1.0.0"
 
 # Serialization

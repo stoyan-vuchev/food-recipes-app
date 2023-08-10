@@ -152,7 +152,6 @@ dependencies {
     // Google Accompanist
 
     implementation(libs.google.accompanist.systemUiController)
-    implementation(libs.google.accompanist.navigation.animation)
 
     // Image loading
 
@@ -169,8 +168,13 @@ dependencies {
     // DI
 
     implementation(libs.dagger.hilt.android)
+    testImplementation(libs.dagger.hilt.android.testing)
+    androidTestImplementation(libs.dagger.hilt.android.testing)
     implementation(libs.androidx.hilt.navigation.compose)
+    androidTestImplementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.dagger.hilt.compiler)
+    kaptTest(libs.dagger.hilt.compiler)
+    kaptAndroidTest(libs.dagger.hilt.compiler)
 
     // Serialization
 

@@ -28,7 +28,6 @@ package com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.color
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 
 /** A collection of the default color palette tokens. */
 @Immutable
@@ -88,7 +87,8 @@ object ColorPaletteTokens {
     val Background0: Color get() = Color(0, 0, 0)
     val Background10: Color get() = Color(25, 27, 35)
     val Background20: Color get() = Color(46, 48, 56)
-    val Background15: Color get() = lerp(Background10, Background20, .5f)
+
+    // val Background15: Color get() = lerp(Background10, Background20, .5f)
     val Background25: Color get() = Color(57, 59, 67)
     val Background30: Color get() = Color(68, 70, 79)
     val Background35: Color get() = Color(80, 82, 90)

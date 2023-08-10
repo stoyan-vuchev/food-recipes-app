@@ -12,10 +12,15 @@ import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 
 class RecipesFakeRepository(
     private val dao: LocalDatabaseDao
 ) : RecipesRepository {
+
+    override suspend fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
+        return dao.getRecentRecipes(count).map { it.map { e -> e.toRecipeModel() } }
+    }
 
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
@@ -46,6 +51,14 @@ class RecipesFakeRepository(
         awaitClose { }
     }
 
+    override suspend fun updateRecipeSavedState(
+        recipe: RecipeEntity,
+        saved: Boolean,
+        timestamp: Long?
+    ): Flow<Result<Unit>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateRecipe(
         recipeModel: RecipeModel
     ): Flow<Result<Unit>> = callbackFlow {
@@ -67,6 +80,7 @@ class RecipesFakeRepository(
                 isBookmarked = false,
                 bookmarkTimestamp = null,
                 timestamp = 0L,
+                lastViewedTimestamp = null,
                 label = "",
                 category = RecipesCategory.Breakfast,
                 source = "",
@@ -83,6 +97,7 @@ class RecipesFakeRepository(
                 isBookmarked = false,
                 bookmarkTimestamp = null,
                 timestamp = 0L,
+                lastViewedTimestamp = null,
                 label = "",
                 category = RecipesCategory.Lunch,
                 source = "",
@@ -99,6 +114,7 @@ class RecipesFakeRepository(
                 isBookmarked = false,
                 bookmarkTimestamp = null,
                 timestamp = 0L,
+                lastViewedTimestamp = null,
                 label = "",
                 category = RecipesCategory.Dinner,
                 source = "",

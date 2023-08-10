@@ -44,8 +44,8 @@ fun Modifier.fadingEdges(
     minFade: Float = 0.5f,
     maxFade: Float = 0f,
     active: Boolean = true,
-    startOffset: Dp = 32.dp,
-    endOffset: Dp = 32.dp
+    startOffset: Dp = 24.dp,
+    endOffset: Dp = 24.dp
 ) = composed {
 
     val startAlpha by animateFloatAsState(
