@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,6 +21,9 @@ import androidx.navigation.navArgument
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.ui.RecipeScreen
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
@@ -105,11 +109,31 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
         composable(
             route = MainScreenDestinations.Recipe.route,
             arguments = listOf(
-                navArgument(name = "recipeId") { type = NavType.StringType }
+                navArgument(
+                    name = "recipeId",
+                    builder = { type = NavType.StringType }
+                )
             ),
             content = {
 
-                Text(text = it.arguments?.getString("recipeId") ?: "Error")
+                val viewModel = hiltViewModel<RecipeScreenViewModel>()
+                val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+                val uriHandler = LocalUriHandler.current
+
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
+                            is RecipeScreenUiAction.NavigateBack -> navController.navigateUp()
+                            is RecipeScreenUiAction.ViewFullRecipe -> uriHandler.openUri(uiAction.url)
+                            else -> Unit
+                        }
+                    }
+                }
+
+                RecipeScreen(
+                    screenState = screenState,
+                    onUiAction = viewModel::onUiAction
+                )
 
             }
         )

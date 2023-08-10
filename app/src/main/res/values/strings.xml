@@ -7,4 +7,10 @@
     <string name="saved_recipe_button_label">Saved</string>
     <string name="save_recipe_button_label">Save</string>
     <string name="home_screen_top_bar_title">Let\'s get cooking!</string>
+    <string name="navigate_back">Navigate back.</string>
+    <string name="recipe">Recipe</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="procedures">Procedures</string>
+    <string name="no_procedures_available">No procedures available.</string>
+    <string name="view_full_details">View full details</string>
 </resources>

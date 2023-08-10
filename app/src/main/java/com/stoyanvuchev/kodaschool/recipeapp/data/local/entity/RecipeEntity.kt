@@ -28,6 +28,7 @@ data class RecipeEntity(
     val label: String,
     val category: RecipesCategory,
     val ingredients: List<RecipeIngredient>,
+    val instructions: List<String>,
     val source: String,
     val url: String,
 
