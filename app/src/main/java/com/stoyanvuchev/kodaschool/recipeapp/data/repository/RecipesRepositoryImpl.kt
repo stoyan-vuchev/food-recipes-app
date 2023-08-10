@@ -2,6 +2,7 @@ package com.stoyanvuchev.kodaschool.recipeapp.data.repository
 
 import com.stoyanvuchev.kodaschool.recipeapp.core.utils.Result
 import com.stoyanvuchev.kodaschool.recipeapp.data.local.LocalDatabaseDao
+import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
 import com.stoyanvuchev.kodaschool.recipeapp.data.remote.RemoteDataSourceAPI
 import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
@@ -11,6 +12,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.days
 
@@ -19,18 +21,24 @@ class RecipesRepositoryImpl @Inject constructor(
     private val dao: LocalDatabaseDao
 ) : RecipesRepository {
 
+    override suspend fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
+        return dao.getRecentRecipes(count).map { list -> list.map { it.toRecipeModel() } }
+    }
+
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
     ): List<RecipeModel> {
+
         val cacheTime = System.currentTimeMillis() - 1.days.inWholeMilliseconds
         val recipes = dao.getRecipesByCategory(category)
-        return if (
-            recipes.isNotEmpty() && recipes.first().timestamp > cacheTime
-        ) recipes.map { it.toRecipeModel() }
-        else when (val result = getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
-            is Result.Success -> result.data
+        val first = recipes.firstOrNull()
+
+        return if (first != null && first.timestamp > cacheTime) recipes.map { it.toRecipeModel() }
+        else when (getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
+            is Result.Success -> dao.getRecipesByCategory(category).map { it.toRecipeModel() }
             else -> emptyList()
         }
+
     }
 
     override suspend fun getRecipeById(
@@ -55,7 +63,7 @@ class RecipesRepositoryImpl @Inject constructor(
     ): Flow<Result<Unit>> = callbackFlow {
         trySend(Result.Loading())
         try {
-            dao.upsertRecipe(recipeModel.toRecipeEntity())
+            dao.updateRecipe(recipeModel.toRecipeEntity())
             trySend(Result.Success(Unit))
         } catch (e: Exception) {
             trySend(Result.Error(Result.uiStringError(e.message)))
@@ -63,9 +71,25 @@ class RecipesRepositoryImpl @Inject constructor(
         awaitClose { }
     }
 
+    override suspend fun updateRecipeSavedState(
+        recipe: RecipeEntity,
+        saved: Boolean,
+        timestamp: Long?
+    ): Flow<Result<Unit>> = callbackFlow {
+        trySend(Result.Loading())
+        try {
+            dao.updateRecipeSavedState(recipe, saved, timestamp)
+            trySend(Result.Success(Unit))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            trySend(Result.Error(Result.uiStringError(e.message)))
+        }
+        awaitClose { }
+    }
+
     private suspend fun getRecipesByCategoryFromRemoteDataSourceAPI(
         category: RecipesCategory
-    ): Result<List<RecipeModel>> = try {
+    ): Result<Unit> = try {
         val response = api.searchByCategory(category = category.stringValue)
         if (response.isSuccessful) {
 
@@ -83,7 +107,7 @@ class RecipesRepositoryImpl @Inject constructor(
                     e.printStackTrace()
                 }
 
-                Result.Success(dao.getRecipesByCategory(category).map { it.toRecipeModel() })
+                Result.Success(Unit)
 
             } else {
                 Result.Error(Result.uiStringError())
@@ -107,7 +131,7 @@ class RecipesRepositoryImpl @Inject constructor(
 
                 val timestamp = System.currentTimeMillis()
                 val recipeEntity = responseBody.toRecipeEntity(timestamp)
-                dao.upsertRecipe(recipeEntity)
+                dao.updateRecipe(recipeEntity)
 
                 val entity = dao.getRecipeById(recipeId)
                 if (entity != null) {

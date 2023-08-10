@@ -33,12 +33,12 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 object DarkColorsTokens {
     val Primary: Color get() = ColorPaletteTokens.Primary80
-    val OnPrimary: Color get() = ColorPaletteTokens.Primary20
+    val OnPrimary: Color get() = ColorPaletteTokens.Primary10
     val PrimaryContainer: Color get() = ColorPaletteTokens.Primary25
     val OnPrimaryContainer: Color get() = ColorPaletteTokens.Primary90
     val Accent: Color get() = ColorPaletteTokens.Accent80
     val OnAccent: Color get() = ColorPaletteTokens.Accent20
-    val AccentContainer: Color get() = ColorPaletteTokens.Accent20
+    val AccentContainer: Color get() = ColorPaletteTokens.Accent25
     val OnAccentContainer: Color get() = ColorPaletteTokens.Accent90
     val Background: Color get() = ColorPaletteTokens.Background10
     val OnBackground: Color get() = ColorPaletteTokens.Background90

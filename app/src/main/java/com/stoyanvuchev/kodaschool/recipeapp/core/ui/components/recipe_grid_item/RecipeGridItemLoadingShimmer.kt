@@ -63,16 +63,18 @@ fun RecipeGridItemLoadingShimmer(
     var intSize by remember { mutableStateOf(IntSize.Zero) }
     val transition = rememberInfiniteTransition(label = "")
     val startOffsetX by transition.animateFloat(
-        initialValue = -2 * intSize.width.toFloat(),
-        targetValue = 2 * intSize.width.toFloat(),
+        initialValue = -4 * intSize.width.toFloat(),
+        targetValue = 3 * intSize.width.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000)
+            animation = tween(
+                durationMillis = 1000
+            )
         ),
         label = ""
     )
 
-    val startAndEndColor = Theme.colors.outlineVariant
-    val middleColor = Theme.colors.outline
+    val startAndEndColor = Theme.colors.outline.copy(alpha = .1f)
+    val middleColor = Theme.colors.outline.copy(alpha = .2f)
 
     Canvas(
         modifier = Modifier
@@ -85,7 +87,7 @@ fun RecipeGridItemLoadingShimmer(
             val shimmerBrush = Brush.linearGradient(
                 colors = listOf(
                     startAndEndColor,
-                    middleColor.copy(alpha = .2f),
+                    middleColor,
                     startAndEndColor
                 ),
                 start = Offset(

@@ -6,9 +6,12 @@ import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 
 fun RecipeEntity.toRecipeModel() = RecipeModel(
+    id = id,
     recipeId = recipeId,
     isBookmarked = isBookmarked,
     bookmarkTimestamp = bookmarkTimestamp,
+    timestamp = timestamp,
+    lastViewedTimestamp = lastViewedTimestamp,
     label = label,
     category = category,
     ingredients = ingredients,
@@ -22,10 +25,12 @@ fun RecipeEntity.toRecipeModel() = RecipeModel(
 )
 
 fun RecipeModel.toRecipeEntity() = RecipeEntity(
+    id = id,
     recipeId = recipeId,
     isBookmarked = isBookmarked,
     bookmarkTimestamp = bookmarkTimestamp,
     timestamp = timestamp,
+    lastViewedTimestamp = lastViewedTimestamp,
     label = label,
     category = category,
     ingredients = ingredients,
