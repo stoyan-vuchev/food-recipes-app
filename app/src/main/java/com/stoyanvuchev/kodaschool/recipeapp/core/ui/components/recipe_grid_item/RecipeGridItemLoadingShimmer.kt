@@ -31,8 +31,13 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -44,7 +49,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,14 +57,13 @@ import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.shape.ShapeTokens
-import sv.lib.squircleshape.drawSquircle
 
 @Composable
 fun RecipeGridItemLoadingShimmer(
     modifier: Modifier = Modifier
 ) {
 
-    var intSize by remember { mutableStateOf(IntSize.Zero) }
+    var intSize by remember { mutableStateOf(IntSize(128, 214)) }
     val transition = rememberInfiniteTransition(label = "")
     val startOffsetX by transition.animateFloat(
         initialValue = -4 * intSize.width.toFloat(),
@@ -76,97 +79,76 @@ fun RecipeGridItemLoadingShimmer(
     val startAndEndColor = Theme.colors.outline.copy(alpha = .1f)
     val middleColor = Theme.colors.outline.copy(alpha = .2f)
 
-    Canvas(
-        modifier = Modifier
-            .width(128.dp)
-            .height(220.dp)
-            .onGloballyPositioned { intSize = it.size }
-            .then(modifier),
-        onDraw = {
-
-            val shimmerBrush = Brush.linearGradient(
-                colors = listOf(
-                    startAndEndColor,
-                    middleColor,
-                    startAndEndColor
-                ),
-                start = Offset(
-                    x = startOffsetX,
-                    y = 0f
-                ),
-                end = Offset(
-                    x = startOffsetX + this.size.width,
-                    y = this.size.height
-                )
-            )
-
-            val imgPlaceholderCornerRadius = ShapeTokens.MediumShapeRadius.toPx()
-            val labelPlaceholderCornerRadius = ShapeTokens.SmallShapeRadius.toPx()
-            val buttonPlaceholderCornerRadius = ShapeTokens.ExtraLargeShapeRadius.toPx()
-
-            drawSquircle(
-                brush = shimmerBrush,
-                topLeft = Offset.Zero,
-                size = Size(
-                    width = this.size.width,
-                    height = this.size.width
-                ),
-                topLeftCorner = imgPlaceholderCornerRadius,
-                topRightCorner = imgPlaceholderCornerRadius,
-                bottomRightCorner = imgPlaceholderCornerRadius,
-                bottomLeftCorner = imgPlaceholderCornerRadius,
-            )
-
-            drawSquircle(
-                brush = shimmerBrush,
-                topLeft = Offset(
-                    x = 0f,
-                    y = 140.dp.toPx()
-                ),
-                size = Size(
-                    width = this.size.width,
-                    height = 16.dp.toPx()
-                ),
-                topLeftCorner = labelPlaceholderCornerRadius,
-                topRightCorner = labelPlaceholderCornerRadius,
-                bottomRightCorner = labelPlaceholderCornerRadius,
-                bottomLeftCorner = labelPlaceholderCornerRadius,
-            )
-
-            drawSquircle(
-                brush = shimmerBrush,
-                topLeft = Offset(
-                    x = 0f,
-                    y = 162.dp.toPx()
-                ),
-                size = Size(
-                    width = this.size.width * 0.67f,
-                    height = 16.dp.toPx()
-                ),
-                topLeftCorner = labelPlaceholderCornerRadius,
-                topRightCorner = labelPlaceholderCornerRadius,
-                bottomRightCorner = labelPlaceholderCornerRadius,
-                bottomLeftCorner = labelPlaceholderCornerRadius,
-            )
-
-            drawSquircle(
-                brush = shimmerBrush,
-                topLeft = Offset(
-                    x = 0f,
-                    y = 192.dp.toPx()
-                ),
-                size = Size(
-                    width = this.center.x,
-                    height = 28.dp.toPx()
-                ),
-                topLeftCorner = buttonPlaceholderCornerRadius,
-                topRightCorner = buttonPlaceholderCornerRadius,
-                bottomRightCorner = buttonPlaceholderCornerRadius,
-                bottomLeftCorner = buttonPlaceholderCornerRadius,
-            )
-
-        }
+    val shimmerBrush = Brush.linearGradient(
+        colors = listOf(
+            startAndEndColor,
+            middleColor,
+            startAndEndColor
+        ),
+        start = Offset(
+            x = startOffsetX,
+            y = 0f
+        ),
+        end = Offset(
+            x = startOffsetX + intSize.width.toFloat(),
+            y = intSize.height.toFloat()
+        )
     )
+
+    Column(
+        modifier = Modifier
+            .defaultMinSize(minWidth = 128.dp)
+            .onGloballyPositioned { intSize = it.size }
+            .then(modifier)
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .background(
+                    brush = shimmerBrush,
+                    shape = ShapeTokens.MediumShape
+                )
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+                .background(
+                    brush = shimmerBrush,
+                    shape = ShapeTokens.SmallShape
+                )
+        )
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .height(16.dp)
+                .background(
+                    brush = shimmerBrush,
+                    shape = ShapeTokens.SmallShape
+                )
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Box(
+            modifier = Modifier
+                .width(72.dp)
+                .height(28.dp)
+                .background(
+                    brush = shimmerBrush,
+                    shape = ShapeTokens.ExtraLargeShape
+                )
+        )
+
+    }
 
 }
 

@@ -41,6 +41,10 @@ class RecipesRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun getSavedRecipesByCategory(category: RecipesCategory): List<RecipeModel> {
+        return dao.getSavedRecipesByCategory(category).map { it.toRecipeModel() }
+    }
+
     override suspend fun getRecipeById(
         recipeId: String
     ): Flow<Result<RecipeModel>> = callbackFlow {

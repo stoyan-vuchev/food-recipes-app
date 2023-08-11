@@ -8,6 +8,6 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 data class HomeScreenState(
     val isLoadingCategory: Boolean = true,
     val category: RecipesCategory = RecipesCategory.Default,
-    val categories: List<RecipesCategory> = RecipesCategory.categoryList,
+    val categories: List<RecipesCategory> = RecipesCategory.categoryList.drop(1),
     val categoryRecipesList: List<RecipeModel> = emptyList()
 )

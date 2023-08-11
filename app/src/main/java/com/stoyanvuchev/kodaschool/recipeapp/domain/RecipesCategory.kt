@@ -28,6 +28,7 @@ package com.stoyanvuchev.kodaschool.recipeapp.domain
 
 enum class RecipesCategory(val stringValue: String) {
 
+    All(""),
     Breakfast("breakfast"),
     Lunch("lunch"),
     Dinner("dinner"),
@@ -39,6 +40,7 @@ enum class RecipesCategory(val stringValue: String) {
         val Default = Breakfast
         val categoryList: List<RecipesCategory>
             get() = listOf(
+                All,
                 Breakfast,
                 Lunch,
                 Dinner,

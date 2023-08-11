@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,7 @@ fun RecipeGridItem(
 
     Column(
         modifier = modifier
-            .width(128.dp)
+            .defaultMinSize(minWidth = 128.dp)
             .clip(Theme.shapes.medium)
             .clickable(
                 indication = null,

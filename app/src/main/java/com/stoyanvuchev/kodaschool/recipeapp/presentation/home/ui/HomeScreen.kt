@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -73,7 +73,9 @@ fun HomeScreen(
 
     LaunchedEffect(key1 = screenState.category) {
         categoryBarState.animateScrollToItem(
-            screenState.categories.indexOf(screenState.category), 0
+            if (screenState.categories.indexOf(screenState.category) > 2) {
+                screenState.categories.size - 1
+            } else 0, 0
         )
     }
 
@@ -152,7 +154,7 @@ fun HomeScreen(
 
                                     RecipeGridItem(
                                         modifier = Modifier
-                                            .fillMaxWidth()
+                                            .width(128.dp)
                                             .animateItemPlacement(),
                                         recipe = recipe,
                                         enabled = true,
@@ -244,7 +246,7 @@ fun HomeScreen(
 
                                 RecipeGridItemLoadingShimmer(
                                     modifier = Modifier
-                                        .fillMaxWidth()
+                                        .width(128.dp)
                                         .animateItemPlacement()
                                 )
 
@@ -262,7 +264,7 @@ fun HomeScreen(
 
                             RecipeGridItem(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .width(128.dp)
                                     .animateItemPlacement(),
                                 recipe = recipe,
                                 enabled = true,
