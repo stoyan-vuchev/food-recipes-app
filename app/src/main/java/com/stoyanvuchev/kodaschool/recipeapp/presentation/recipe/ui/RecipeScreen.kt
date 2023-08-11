@@ -68,7 +68,7 @@ fun RecipeScreen(
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
     val imageModel by rememberUpdatedState(
         ImageRequest.Builder(LocalContext.current)
-            .data(screenState.recipe.imageRegular)
+            .data(screenState.recipe.thumbnail)
             .crossfade(true)
             .build()
     )

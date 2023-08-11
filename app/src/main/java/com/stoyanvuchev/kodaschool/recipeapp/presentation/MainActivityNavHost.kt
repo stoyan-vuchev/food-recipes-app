@@ -1,6 +1,8 @@
 package com.stoyanvuchev.kodaschool.recipeapp.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -36,6 +38,8 @@ fun MainActivityNavHost(navController: NavHostController) {
             modifier = Modifier.fillMaxSize(),
             navController = navController,
             startDestination = MainScreenDestinations.route,
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
             builder = { mainNavigationGraph(navController = navController) }
         )
 

@@ -24,6 +24,9 @@ import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.ui.RecipeScreen
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui.SavedRecipesScreen
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
@@ -92,16 +95,31 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
             route = MainScreenDestinations.Saved.route,
             content = {
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag("test_tag_saved_screen"),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                val viewModel = hiltViewModel<SavedRecipesScreenViewModel>()
+                val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-                    Text(text = MainScreenDestinations.Saved.label?.asString() ?: "")
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
+
+                            is SavedRecipesScreenUiAction.ViewRecipe -> navController.navigate(
+                                route = MainScreenDestinations.Recipe.route
+                                    .replace(
+                                        "{recipeId}",
+                                        uiAction.recipeId
+                                    )
+                            ) { launchSingleTop = true }
+
+                            else -> Unit
+
+                        }
+                    }
                 }
+
+                SavedRecipesScreen(
+                    screenState = screenState,
+                    onUiAction = viewModel::onUiAction
+                )
 
             }
         )
