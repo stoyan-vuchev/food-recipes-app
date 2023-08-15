@@ -17,10 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import com.stoyanvuchev.kodaschool.recipeapp.R
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
@@ -39,6 +40,8 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.fadingEdges
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItemLoadingShimmer
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.search_bar.SearchBar
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.search_bar.SearchBarMode
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBarDefaults
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
@@ -46,6 +49,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenState
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
+import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -83,7 +87,17 @@ fun HomeScreen(
         categoryLazyListState.animateScrollToItem(0, 0)
     }
 
-    Scaffold(
+    val searchBarTopSpacerHeight by remember(scrollBehavior.state) {
+        derivedStateOf {
+            lerp(
+                start = 24.dp,
+                stop = 0.dp,
+                fraction = scrollBehavior.state.collapsedFraction
+            )
+        }
+    }
+
+    ResponsiveScaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -93,14 +107,24 @@ fun HomeScreen(
 
             TopBar(
                 title = stringResource(id = R.string.home_screen_top_bar_title),
-                scrollBehavior = scrollBehavior,
-//                navigationButton = {
-//
-//                    IconButton(onClick = { /*TODO*/ }) {
-//                        Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = null)
-//                    }
-//
-//                }
+                content = {
+
+                    Spacer(modifier = Modifier.height(searchBarTopSpacerHeight))
+
+                    SearchBar(
+                        queryText = "",
+                        onQueryText = remember { {} },
+                        queryHint = stringResource(id = R.string.search_query_hint),
+                        onClickOrImeAction = remember {
+                            { onUiAction(HomeScreenUiAction.Search) }
+                        },
+                        mode = SearchBarMode.Navigate
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                },
+                scrollBehavior = scrollBehavior
             )
 
         }

@@ -25,7 +25,6 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toDrawable
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.stoyanvuchev.kodaschool.recipeapp.R
@@ -57,6 +57,8 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenState
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenUiAction
+import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
+import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffoldUtils
 
 @Composable
 fun RecipeScreen(
@@ -66,14 +68,18 @@ fun RecipeScreen(
 
     val lazyListState = rememberLazyListState()
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
+    val context = LocalContext.current
+
     val imageModel by rememberUpdatedState(
         ImageRequest.Builder(LocalContext.current)
-            .data(screenState.recipe.thumbnail)
+            .data(screenState.recipe.imageRegular)
+            .fallback(screenState.recipe.thumbnail?.toDrawable(context.resources))
+            .allowConversionToBitmap(true)
             .crossfade(true)
             .build()
     )
 
-    Scaffold(
+    ResponsiveScaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -97,7 +103,8 @@ fun RecipeScreen(
 
                     }
 
-                }
+                },
+                windowInsets = ResponsiveScaffoldUtils.topAppBarWindowInsets()
             )
 
         },

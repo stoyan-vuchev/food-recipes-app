@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
 
 class RecipesRepositoryImpl @Inject constructor(
     private val api: RemoteDataSourceAPI,
@@ -29,13 +28,12 @@ class RecipesRepositoryImpl @Inject constructor(
         category: RecipesCategory
     ): List<RecipeModel> {
 
-        val cacheTime = System.currentTimeMillis() - 1.days.inWholeMilliseconds
         val recipes = dao.getRecipesByCategory(category)
         val first = recipes.firstOrNull()
 
-        return if (first != null && first.timestamp > cacheTime) recipes.map { it.toRecipeModel() }
-        else when (getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
-            is Result.Success -> dao.getRecipesByCategory(category).map { it.toRecipeModel() }
+        return if (recipes.isNotEmpty() && first != null) recipes.map { it.toRecipeModel() }
+        else when (val result = getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
+            is Result.Success -> result.data.map { it.toRecipeModel() }
             else -> emptyList()
         }
 
@@ -93,7 +91,7 @@ class RecipesRepositoryImpl @Inject constructor(
 
     private suspend fun getRecipesByCategoryFromRemoteDataSourceAPI(
         category: RecipesCategory
-    ): Result<Unit> = try {
+    ): Result<List<RecipeEntity>> = try {
         val response = api.searchByCategory(category = category.stringValue)
         if (response.isSuccessful) {
 
@@ -105,13 +103,8 @@ class RecipesRepositoryImpl @Inject constructor(
                     it.recipe.toRecipeEntity(timestamp, category)
                 }
 
-                try {
-                    dao.upsertRecipes(recipes)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-                Result.Success(Unit)
+                dao.insertRecipes(recipes)
+                Result.Success(recipes)
 
             } else {
                 Result.Error(Result.uiStringError())
@@ -121,6 +114,7 @@ class RecipesRepositoryImpl @Inject constructor(
             Result.Error(Result.uiStringError())
         }
     } catch (e: Exception) {
+        e.printStackTrace()
         Result.Error(Result.uiStringError(e.message))
     }
 
