@@ -37,8 +37,8 @@ import sv.lib.squircleshape.SquircleShape
 @Immutable
 object ShapeTokens {
 
-    val SmallShapeRadius: Dp get() = 8.dp
-    val MediumShapeRadius: Dp get() = 14.dp
+    val SmallShapeRadius: Dp get() = 12.dp
+    val MediumShapeRadius: Dp get() = 16.dp
     val LargeShapeRadius: Dp get() = 20.dp
     val ExtraLargeShapeRadius: Dp get() = 32.dp
 

@@ -48,6 +48,6 @@ object LightColorsTokens {
     val OnError: Color get() = ColorPaletteTokens.Error100
     val ErrorContainer: Color get() = ColorPaletteTokens.Error80
     val OnErrorContainer: Color get() = ColorPaletteTokens.Error10
-    val Outline: Color get() = ColorPaletteTokens.Background50
+    val Outline: Color get() = ColorPaletteTokens.Background70
     val OutlineVariant: Color get() = ColorPaletteTokens.Background90
 }

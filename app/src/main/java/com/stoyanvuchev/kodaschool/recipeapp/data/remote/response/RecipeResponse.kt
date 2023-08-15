@@ -7,9 +7,9 @@ data class RecipeResponse(
     @SerializedName("images")
     val images: RecipeResponseImages,
     @SerializedName("ingredients")
-    val ingredients: List<RecipeIngredient>,
+    val ingredients: ArrayList<RecipeIngredient?>?,
     @SerializedName("instructions")
-    val instructions: ArrayList<String>?,
+    val instructions: ArrayList<String?>?,
     @SerializedName("label")
     val label: String,
     @SerializedName("mealType")

@@ -24,8 +24,8 @@ import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.ui.RecipeScreen
-import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui.SavedRecipesScreen
 import kotlinx.coroutines.flow.collectLatest
 
@@ -47,6 +47,10 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
                 LaunchedEffect(key1 = viewModel.uiActionFlow) {
                     viewModel.uiActionFlow.collectLatest { uiAction ->
                         when (uiAction) {
+
+                            is HomeScreenUiAction.Search -> navController.navigate(
+                                route = MainScreenDestinations.Search.route
+                            ) { launchSingleTop = true }
 
                             is HomeScreenUiAction.ViewRecipe -> navController.navigate(
                                 route = MainScreenDestinations.Recipe.route

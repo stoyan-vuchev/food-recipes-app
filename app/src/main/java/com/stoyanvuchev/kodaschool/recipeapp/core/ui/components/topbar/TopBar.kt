@@ -42,11 +42,14 @@
 
 package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -59,10 +62,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
@@ -82,6 +86,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 
 /**
  * A custom top bar UI component based on the design system and the Material3 skeleton.
@@ -108,6 +113,43 @@ fun TopBar(
     smallTitleTextStyle = ComponentsTokens.TopBar.smallTitleTextStyle,
     largeTitleTextStyle = ComponentsTokens.TopBar.largeTitleTextStyle,
     navigationButton = navigationButton,
+    content = null,
+    windowInsets = windowInsets,
+    backgroundColor = backgroundColor,
+    contentColor = contentColor,
+    maxHeight = TopBarDefaults.largeContainerHeight,
+    pinnedHeight = TopBarDefaults.smallContainerHeight,
+    scrollBehavior = scrollBehavior
+)
+
+/**
+ * A custom top bar UI component based on the design system and the Material3 skeleton.
+ * @param modifier Further customization.
+ * @param title The title of the top bar.
+ * @param navigationButton An optional navigation button (e.g. for navigating back or to open a menu).
+ * @param content An optional content to be displayed under the top bar. (e.g. a [CategoryBar]).
+ * @param scrollBehavior The top bar scroll behavior.
+ * @param backgroundColor The background color of the top bar.
+ * @param contentColor Applies content color to the [title] and [navigationButton].
+ * @param windowInsets Applies window insets values to the top bar.
+ **/
+@Composable
+fun TopBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    navigationButton: @Composable (() -> Unit)? = null,
+    content: @Composable (ColumnScope.() -> Unit)? = null,
+    scrollBehavior: TopBarScrollBehavior? = null,
+    backgroundColor: Color = TopBarDefaults.backgroundColor,
+    contentColor: Color = TopBarDefaults.contentColor,
+    windowInsets: WindowInsets = TopBarDefaults.windowInsets
+) = ResizableTopBarLayout(
+    modifier = modifier,
+    title = title,
+    smallTitleTextStyle = ComponentsTokens.TopBar.smallTitleTextStyle,
+    largeTitleTextStyle = ComponentsTokens.TopBar.largeTitleTextStyle,
+    navigationButton = navigationButton,
+    content = content,
     windowInsets = windowInsets,
     backgroundColor = backgroundColor,
     contentColor = contentColor,
@@ -137,6 +179,7 @@ private fun ResizableTopBarLayout(
     smallTitleTextStyle: TextStyle,
     largeTitleTextStyle: TextStyle,
     navigationButton: @Composable (() -> Unit)?,
+    content: @Composable (ColumnScope.() -> Unit)?,
     windowInsets: WindowInsets,
     backgroundColor: Color,
     contentColor: Color,
@@ -228,63 +271,84 @@ private fun ResizableTopBarLayout(
         }
     }
 
-    Surface(
-        modifier = Modifier
-            .testTag("top_bar")
-            .fillMaxWidth()
-            .height(height)
-            .clipToBounds()
-            .then(topBarDragModifier)
-            .then(modifier),
-        color = backgroundColor,
-        contentColor = contentColor
-    ) {
+    val topBarContent: @Composable ColumnScope.() -> Unit = {
 
-        Box(
-            modifier = Modifier
-                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal)),
-            contentAlignment = Alignment.BottomStart
+        CompositionLocalProvider(
+            LocalContentColor provides contentColor
         ) {
 
             Box(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(
-                        start = titleStartPadding,
-                        end = 48.dp,
-                        bottom = titleBottomPadding
-                    ),
-                contentAlignment = Alignment.BottomStart,
-                content = {
-
-                    ProvideTextStyle(
-                        value = variableTextStyle,
-                        content = { Text(text = title) }
-                    )
-
-                }
-            )
-
-            Row(
-                modifier = Modifier.height(pinnedHeight),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .height(height),
+                contentAlignment = Alignment.BottomStart
             ) {
 
-                if (navigationButton != null) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    navigationButton()
-                    Spacer(modifier = Modifier.width(8.dp))
-                } else {
-                    Spacer(modifier = Modifier.width(20.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(
+                            start = titleStartPadding,
+                            end = 48.dp,
+                            bottom = titleBottomPadding
+                        ),
+                    contentAlignment = Alignment.BottomStart,
+                    content = {
+
+                        ProvideTextStyle(
+                            value = variableTextStyle,
+                            content = { Text(text = title) }
+                        )
+
+                    }
+                )
+
+                Row(
+                    modifier = Modifier.height(pinnedHeight),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    if (navigationButton != null) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        navigationButton()
+                        Spacer(modifier = Modifier.width(8.dp))
+                    } else {
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+
                 }
 
             }
 
+        }
+        
+    }
+
+    val bottomContent: @Composable ColumnScope.() -> Unit = { content?.let { it() } }
+
+    Box(
+        modifier = Modifier
+            .testTag("top_bar")
+            .fillMaxWidth()
+            .clipToBounds()
+            .background(backgroundColor)
+            .then(topBarDragModifier)
+            .then(modifier)
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal)),
+        ) {
+
+            topBarContent()
+
+            bottomContent()
+
             Divider(
-                modifier = Modifier
-                    .alpha(collapsedFraction)
-                    .align(Alignment.BottomStart),
+                modifier = Modifier.alpha(collapsedFraction),
                 color = ComponentsTokens.Separator.color,
                 thickness = ComponentsTokens.Separator.thickness
             )

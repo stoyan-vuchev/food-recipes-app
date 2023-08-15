@@ -46,7 +46,6 @@ data class RecipeEntity(
 ) {
 
     override fun equals(other: Any?): Boolean {
-
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
@@ -57,9 +56,11 @@ data class RecipeEntity(
         if (isBookmarked != other.isBookmarked) return false
         if (bookmarkTimestamp != other.bookmarkTimestamp) return false
         if (timestamp != other.timestamp) return false
+        if (lastViewedTimestamp != other.lastViewedTimestamp) return false
         if (label != other.label) return false
         if (category != other.category) return false
         if (ingredients != other.ingredients) return false
+        if (instructions != other.instructions) return false
         if (source != other.source) return false
         if (url != other.url) return false
         if (imageThumbnail != other.imageThumbnail) return false
@@ -72,7 +73,6 @@ data class RecipeEntity(
         } else if (other.thumbnail != null) return false
 
         return true
-
     }
 
     override fun hashCode(): Int {
@@ -81,9 +81,11 @@ data class RecipeEntity(
         result = 31 * result + isBookmarked.hashCode()
         result = 31 * result + (bookmarkTimestamp?.hashCode() ?: 0)
         result = 31 * result + timestamp.hashCode()
+        result = 31 * result + (lastViewedTimestamp?.hashCode() ?: 0)
         result = 31 * result + label.hashCode()
         result = 31 * result + category.hashCode()
         result = 31 * result + ingredients.hashCode()
+        result = 31 * result + instructions.hashCode()
         result = 31 * result + source.hashCode()
         result = 31 * result + url.hashCode()
         result = 31 * result + imageThumbnail.hashCode()

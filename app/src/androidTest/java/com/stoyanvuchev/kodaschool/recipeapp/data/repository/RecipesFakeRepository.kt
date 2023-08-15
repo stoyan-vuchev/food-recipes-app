@@ -28,6 +28,10 @@ class RecipesFakeRepository(
         return dao.getRecipesByCategory(category).map { it.toRecipeModel() }
     }
 
+    override suspend fun getSavedRecipesByCategory(category: RecipesCategory): List<RecipeModel> {
+        return dao.getSavedRecipesByCategory(category).map { it.toRecipeModel() }
+    }
+
     override suspend fun getRecipeById(
         recipeId: String
     ): Flow<Result<RecipeModel>> = callbackFlow {
@@ -85,6 +89,7 @@ class RecipesFakeRepository(
                 category = RecipesCategory.Breakfast,
                 source = "",
                 ingredients = emptyList(),
+                instructions = emptyList(),
                 url = "",
                 imageThumbnail = "",
                 imageSmall = "",
@@ -102,6 +107,7 @@ class RecipesFakeRepository(
                 category = RecipesCategory.Lunch,
                 source = "",
                 ingredients = emptyList(),
+                instructions = emptyList(),
                 url = "",
                 imageThumbnail = "",
                 imageSmall = "",
@@ -119,6 +125,7 @@ class RecipesFakeRepository(
                 category = RecipesCategory.Dinner,
                 source = "",
                 ingredients = emptyList(),
+                instructions = emptyList(),
                 url = "",
                 imageThumbnail = "",
                 imageSmall = "",

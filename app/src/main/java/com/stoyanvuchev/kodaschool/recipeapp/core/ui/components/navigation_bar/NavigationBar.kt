@@ -40,7 +40,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 
@@ -65,9 +64,8 @@ fun NavigationBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = colors.backgroundColor)
-            .testTag("navigation_bar")
-            .then(modifier)
-            .then(Modifier.windowInsetsPadding(windowInsets)),
+            .windowInsetsPadding(windowInsets)
+            .then(modifier),
         content = {
 
             Divider(

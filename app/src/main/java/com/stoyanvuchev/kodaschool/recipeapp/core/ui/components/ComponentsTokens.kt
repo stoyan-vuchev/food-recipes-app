@@ -44,7 +44,7 @@ object ComponentsTokens {
 
     // Separator
 
-    object Separator {
+    data object Separator {
 
         val color: Color @Composable get() = Theme.colors.outlineVariant
         val thickness: Dp get() = 1.0.dp
@@ -53,12 +53,12 @@ object ComponentsTokens {
 
     // Navigation bar
 
-    object NavigationBar {
+    data object NavigationBar {
 
         val containerHeight: Dp get() = 67.0.dp
         val backgroundColor: Color @Composable get() = Theme.colors.background
         val selectedItemColor: Color @Composable get() = Theme.colors.primary
-        val unselectedItemColor: Color @Composable get() = Theme.colors.outline
+        val unselectedItemColor: Color @Composable get() = Theme.colors.onBackgroundContainer
 
         val itemIconSize: Dp get() = 20.0.dp
         val containerHorizontalSpacing: Dp get() = 8.0.dp
@@ -77,7 +77,7 @@ object ComponentsTokens {
 
     // Category bar
 
-    object CategoryBar {
+    data object CategoryBar {
 
         val containerHeight: Dp get() = 56.0.dp
         val itemContainerHeight: Dp get() = 30.0.dp
@@ -102,7 +102,7 @@ object ComponentsTokens {
 
     // Button
 
-    object Button {
+    data object Button {
 
         val backgroundColor: Color @Composable get() = Theme.colors.primary
         val contentColor: Color @Composable get() = Theme.colors.onPrimary
@@ -122,7 +122,7 @@ object ComponentsTokens {
 
     // TopBar
 
-    object TopBar {
+    data object TopBar {
 
         val smallContainerHeight: Dp = 64.0.dp
         val largeContainerHeight: Dp = 150.0.dp
@@ -133,15 +133,34 @@ object ComponentsTokens {
         val iconButtonIconSize: Dp = 24.0.dp
         val iconButtonContainerSize: Dp = 48.0.dp
 
-        val smallTitleTextStyle: TextStyle @Composable get() = Theme.typography.sectionTitle.copy(
-            fontWeight = FontWeight.Bold
-        )
+        val smallTitleTextStyle: TextStyle
+            @Composable get() = Theme.typography.sectionTitle.copy(
+                fontWeight = FontWeight.Bold
+            )
 
         val largeTitleTextStyle: TextStyle @Composable get() = Theme.typography.largeTitle
 
         val windowInsets: WindowInsets
             @Composable get() = WindowInsets.systemBarsForUiComponents
                 .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+
+    }
+
+    // SearchBar
+
+    data object SearchBar {
+
+        val borderWidth: Dp get() = 1.dp
+        val containerHeight: Dp get() = 48.dp
+        val horizontalContainerPadding: Dp get() = 24.dp
+        val horizontalContentPadding: Dp get() = 16.dp
+        val iconSize: Dp get() = 18.dp
+
+        val borderColor: Color @Composable get() = Theme.colors.outline
+        val contentColor: Color @Composable get() = Theme.colors.onBackground
+
+        val textStyle: TextStyle @Composable get() = Theme.typography.sectionTitle
+        val shape: Shape @Composable get() = Theme.shapes.small
 
     }
 

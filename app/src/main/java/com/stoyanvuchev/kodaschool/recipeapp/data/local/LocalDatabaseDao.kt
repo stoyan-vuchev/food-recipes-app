@@ -59,7 +59,7 @@ interface LocalDatabaseDao {
     @Update
     suspend fun updateRecipe(recipeEntity: RecipeEntity)
 
-    @Upsert
-    suspend fun upsertRecipes(recipes: List<RecipeEntity>)
+   @Upsert
+   suspend fun upsertRecipes(recipes: List<RecipeEntity>)
 
 }

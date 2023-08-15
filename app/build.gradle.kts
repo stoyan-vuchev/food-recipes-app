@@ -137,17 +137,20 @@ dependencies {
     // Jetpack Compose
 
     implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material3)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
 
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 
-    // Squircle Shape
+    // Squircle Shape & Responsive Scaffold
 
     implementation(libs.stoyan.vuchev.squircle.shape)
+    implementation(libs.stoyan.vuchev.responsive.scaffold)
 
     // Google Accompanist
 
@@ -198,7 +201,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.app.cash.turbine)
     androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.assertk)
     androidTestImplementation(libs.app.cash.turbine)
     androidTestImplementation(libs.androidx.navigation.testing)
@@ -206,5 +209,5 @@ dependencies {
 }
 
 ksp {
-    arg("room.schemaLocation", "$projectDir/schemas-ksp")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

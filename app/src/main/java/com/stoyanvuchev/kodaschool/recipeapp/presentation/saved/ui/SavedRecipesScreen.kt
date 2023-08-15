@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.R
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
@@ -49,6 +46,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenState
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
+import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
 
 @Composable
 fun SavedRecipesScreen(
@@ -90,7 +88,7 @@ fun SavedRecipesScreen(
         }
     }
 
-    Scaffold(
+    ResponsiveScaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -100,142 +98,133 @@ fun SavedRecipesScreen(
 
             TopBar(
                 title = stringResource(id = R.string.saved_screen_title),
+                content = {
+
+                    AnimatedContent(
+                        targetState = isSectionLabelVisible,
+                        label = ""
+                    ) { isVisible ->
+
+                        if (isVisible) {
+
+                            Column {
+
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                Text(
+                                    modifier = Modifier.padding(horizontal = 24.dp),
+                                    text = "Filter by:",
+                                    style = Theme.typography.sectionTitle.copy(fontWeight = FontWeight.Bold),
+                                    color = Theme.colors.onBackground
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+
+                        }
+
+                    }
+
+                    CategoryBar(
+                        modifier = Modifier.fadingEdges(),
+                        state = categoryBarState,
+                        horizontalContentPadding = 24.dp,
+                        items = {
+
+                            items(
+                                items = screenState.categories,
+                                key = { "category_$it" },
+                                itemContent = { category ->
+
+                                    CategoryBarItemContent(
+                                        selected = screenState.category == category,
+                                        onSelected = remember {
+                                            {
+                                                onUiAction(
+                                                    SavedRecipesScreenUiAction.SetCategory(
+                                                        category
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        label = category.name
+                                    )
+
+                                }
+                            )
+
+                        }
+                    )
+
+                },
                 scrollBehavior = scrollBehavior
             )
 
         }
     ) { paddingValues ->
 
-        val topPadding by rememberUpdatedState(
-            PaddingValues(
-                top = paddingValues.calculateTopPadding()
-            )
-        )
-
         val actualPadding by rememberUpdatedState(
             PaddingValues(
+                top = paddingValues.calculateTopPadding() + 12.dp,
                 start = paddingValues.calculateStartPadding(layoutDirection) + 12.dp,
                 end = paddingValues.calculateEndPadding(layoutDirection) + 12.dp,
                 bottom = paddingValues.calculateBottomPadding() + 128.dp,
             )
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = topPadding.calculateTopPadding())
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            state = lazyGridState,
+            columns = GridCells.Adaptive(128.dp),
+            contentPadding = actualPadding,
+            userScrollEnabled = !screenState.isLoading
         ) {
 
-            AnimatedContent(
-                targetState = isSectionLabelVisible,
-                label = ""
-            ) { isVisible ->
+            if (screenState.isLoading) {
 
-                if (isVisible) {
+                items(
+                    count = 20,
+                    key = { "saved_recipe_placeholder_$it" }
+                ) {
 
-                    Column {
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        Text(
-                            modifier = Modifier.padding(horizontal = 24.dp),
-                            text = "Filter by:",
-                            style = Theme.typography.sectionTitle.copy(fontWeight = FontWeight.Bold),
-                            color = Theme.colors.onBackground
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-
-                }
-
-            }
-
-            CategoryBar(
-                modifier = Modifier.fadingEdges(),
-                state = categoryBarState,
-                horizontalContentPadding = 24.dp,
-                items = {
-
-                    items(
-                        items = screenState.categories,
-                        key = { "category_$it" },
-                        itemContent = { category ->
-
-                            CategoryBarItemContent(
-                                selected = screenState.category == category,
-                                onSelected = remember {
-                                    { onUiAction(SavedRecipesScreenUiAction.SetCategory(category)) }
-                                },
-                                label = category.name
-                            )
-
-                        }
+                    RecipeGridItemLoadingShimmer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
                     )
 
                 }
-            )
 
-            Divider(
-                color = ComponentsTokens.Separator.color.copy(alpha = collapsedTopBarFraction),
-                thickness = ComponentsTokens.Separator.thickness
-            )
+            } else {
 
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyGridState,
-                columns = GridCells.Adaptive(128.dp),
-                contentPadding = actualPadding,
-                userScrollEnabled = !screenState.isLoading
-            ) {
+                items(
+                    items = screenState.recipes,
+                    key = { "saved_recipe_$it" }
+                ) { recipe ->
 
-                if (screenState.isLoading) {
+                    var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
 
-                    items(
-                        count = 20,
-                        key = { "saved_recipe_placeholder_$it" }
-                    ) {
-
-                        RecipeGridItemLoadingShimmer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp)
-                        )
-
-                    }
-
-                } else {
-
-                    items(
-                        items = screenState.recipes,
-                        key = { "saved_recipe_$it" }
-                    ) { recipe ->
-
-                        var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
-
-                        RecipeGridItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
-                            recipe = recipe.copy(isBookmarked = isSaved),
-                            enabled = true,
-                            onSave = remember {
-                                {
-                                    isSaved = !isSaved
-                                    onUiAction(
-                                        SavedRecipesScreenUiAction.SetSaved(
-                                            isSaved,
-                                            recipe.recipeId
-                                        )
+                    RecipeGridItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        recipe = recipe.copy(isBookmarked = isSaved),
+                        enabled = true,
+                        onSave = remember {
+                            {
+                                isSaved = !isSaved
+                                onUiAction(
+                                    SavedRecipesScreenUiAction.SetSaved(
+                                        isSaved,
+                                        recipe.recipeId
                                     )
-                                }
-                            },
-                            onClick = remember {
-                                { onUiAction(SavedRecipesScreenUiAction.ViewRecipe(recipe.recipeId)) }
+                                )
                             }
-                        )
-
-                    }
+                        },
+                        onClick = remember {
+                            { onUiAction(SavedRecipesScreenUiAction.ViewRecipe(recipe.recipeId)) }
+                        }
+                    )
 
                 }
 

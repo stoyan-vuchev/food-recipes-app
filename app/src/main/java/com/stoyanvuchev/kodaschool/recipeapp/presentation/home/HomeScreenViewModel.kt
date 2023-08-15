@@ -59,6 +59,7 @@ class HomeScreenViewModel @Inject constructor(
     fun onUiAction(uiAction: HomeScreenUiAction) {
         when (uiAction) {
 
+            is HomeScreenUiAction.Search -> sendUiAction(uiAction)
             is HomeScreenUiAction.SetCategory -> setCategory(uiAction.category)
             is HomeScreenUiAction.ViewRecipe -> viewRecipe(uiAction)
 
@@ -72,7 +73,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun viewRecipe(uiAction: HomeScreenUiAction.ViewRecipe) {
 
-        val recipe = (_recentRecipes + _categorizedRecipes)
+        val recipe = (_categorizedRecipes + _recentRecipes)
             .find { it.recipeId == uiAction.recipeId }
 
         recipe?.let {
@@ -114,7 +115,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun setSavedRecipeState(recipeId: String, saved: Boolean) {
 
-        val recipe = (_recentRecipes + _categorizedRecipes)
+        val recipe = (_categorizedRecipes + _recentRecipes)
             .find { it.recipeId == recipeId }
 
         recipe?.let {
