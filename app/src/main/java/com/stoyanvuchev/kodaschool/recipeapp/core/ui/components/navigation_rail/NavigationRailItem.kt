@@ -24,7 +24,7 @@
 *
 */
 
-package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.navigation_bar
+package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.navigation_rail
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.updateTransition
@@ -35,7 +35,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,21 +55,23 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 
 /**
- * An item for a [NavigationBar].
+ * An item for a [NavigationRail].
+ * @param modifier Apply further customization.
  * @param selected Whether the item is selected or not.
  * @param onSelected Callback invoked when the item is being selected.
  * @param icon The item icon painter.
  * @param label The item label text.
  **/
 @Composable
-fun NavigationBarScope.NavigationBarItem(
+fun NavigationRailScope.NavigationRailItem(
+    modifier: Modifier = Modifier,
     selected: Boolean,
     onSelected: () -> Unit,
     icon: Painter,
     label: String
 ) = with(this) {
 
-    val colors = LocalNavigationBarColors.current
+    val colors = LocalNavigationRailColors.current
     val interactionSource = remember { MutableInteractionSource() }
     val stateTransition = updateTransition(
         targetState = selected,
@@ -93,19 +95,23 @@ fun NavigationBarScope.NavigationBarItem(
 
     Column(
         modifier = Modifier
-            .fillMaxHeight()
-            .weight(1f)
+            .fillMaxWidth()
             .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Tab,
                 enabled = !selected,
                 onClick = onSelected
-            ),
+            )
+            .padding(vertical = ComponentsTokens.NavigationRail.contentSpacing)
+            .then(modifier),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         content = {
 
             Box(
                 modifier = Modifier
-                    .size(ComponentsTokens.NavigationBar.itemIconContainerSize)
+                    .size(ComponentsTokens.NavigationRail.itemIconContainerSize)
                     .clip(Theme.shapes.large)
                     .background(color = iconBackgroundColor)
                     .clickable(
@@ -119,7 +125,7 @@ fun NavigationBarScope.NavigationBarItem(
             ) {
 
                 Icon(
-                    modifier = Modifier.size(ComponentsTokens.NavigationBar.itemIconSize),
+                    modifier = Modifier.size(ComponentsTokens.NavigationRail.itemIconSize),
                     painter = icon,
                     contentDescription = null,
                     tint = iconColor
@@ -129,13 +135,13 @@ fun NavigationBarScope.NavigationBarItem(
 
             Spacer(
                 modifier = Modifier.height(
-                    ComponentsTokens.NavigationBar.itemContainerVerticalSpacing
+                    ComponentsTokens.NavigationRail.itemContainerVerticalSpacing
                 )
             )
 
             Text(
                 modifier = Modifier.padding(
-                    horizontal = NavigationBarDefaults.containerHorizontalSpacing
+                    horizontal = ComponentsTokens.NavigationRail.itemContainerHorizontalSpacing
                 ),
                 text = label,
                 color = labelColor,
