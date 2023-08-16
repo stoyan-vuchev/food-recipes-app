@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.Color
 object LightColorsTokens {
     val Primary: Color get() = ColorPaletteTokens.Primary40
     val OnPrimary: Color get() = ColorPaletteTokens.Primary100
-    val PrimaryContainer: Color get() = ColorPaletteTokens.Primary95
+    val PrimaryContainer: Color get() = ColorPaletteTokens.Primary90
     val OnPrimaryContainer: Color get() = ColorPaletteTokens.Primary10
     val Accent: Color get() = ColorPaletteTokens.Accent40
     val OnAccent: Color get() = ColorPaletteTokens.Accent100

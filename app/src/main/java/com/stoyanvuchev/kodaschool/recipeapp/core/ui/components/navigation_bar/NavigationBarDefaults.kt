@@ -49,46 +49,44 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 
-/** The default property values of a navigation bar. */
+/** The default property values of a [NavigationBar]. */
 object NavigationBarDefaults {
 
-    /** The height of the navigation bar container (without the window insets). */
+    /** The height of the [NavigationBar] container (without the window insets). */
     val containerHeight: Dp get() = ComponentsTokens.NavigationBar.containerHeight
 
     /**
-     * Returns the default colors of a navigation bar with an optional overriding.
+     * Returns the default colors of a [NavigationBar] with an optional overriding.
      * @param backgroundColor The background color of the navigation bar.
-     * @param selectedItemColor The color of the selected navigation bar item.
+     * @param selectedItemIconBackgroundColor The icon background color of a navigation bar item.
+     * @param selectedItemIconColor The color of the icon on a selected navigation bar item.
+     * @param selectedItemLabelColor The color of the selected navigation bar item.
      * @param unselectedItemColor The color of the unselected navigation bar items.
      **/
     @Composable
     fun colors(
         backgroundColor: Color = ComponentsTokens.NavigationBar.backgroundColor,
-        selectedItemColor: Color = ComponentsTokens.NavigationBar.selectedItemColor,
+        selectedItemIconBackgroundColor: Color = ComponentsTokens.NavigationBar.selectedItemIconBackgroundColor,
+        selectedItemIconColor: Color = ComponentsTokens.NavigationBar.selectedItemIconColor,
+        selectedItemLabelColor: Color = ComponentsTokens.NavigationBar.selectedItemLabelColor,
         unselectedItemColor: Color = ComponentsTokens.NavigationBar.unselectedItemColor
     ) = NavigationBarColors(
         backgroundColor = backgroundColor,
-        selectedItemColor = selectedItemColor,
+        selectedItemIconBackgroundColor = selectedItemIconBackgroundColor,
+        selectedItemIconColor = selectedItemIconColor,
+        selectedItemLabelColor = selectedItemLabelColor,
         unselectedItemColor = unselectedItemColor
     )
 
-    /** The text style of the navigation bar item label. */
+    /** The text style of a [NavigationBarItem] label. */
     val itemLabelTextStyle: TextStyle
         @Composable get() = ComponentsTokens.NavigationBar.itemLabelTextStyle
 
-    /** The icon size of the navigation bar item. */
-    val itemIconSize: Dp
-        @Composable get() = ComponentsTokens.NavigationBar.itemIconSize
-
-    /** The horizontal spacing of the navigation bar container. */
+    /** The horizontal spacing of the [NavigationBar] container. */
     val containerHorizontalSpacing: Dp
         @Composable get() = ComponentsTokens.NavigationBar.containerHorizontalSpacing
 
-    /** The vertical spacing of the navigation bar item container. */
-    val itemContainerVerticalSpacing: Dp
-        @Composable get() = ComponentsTokens.NavigationBar.itemContainerVerticalSpacing
-
-    /** The window insets used for preventing the navigation bar falling under the system bars. */
+    /** The window insets used for preventing the [NavigationBar] falling under the system bars. */
     val windowInsets: WindowInsets
         @Composable get() = ComponentsTokens.NavigationBar.windowInsets
 

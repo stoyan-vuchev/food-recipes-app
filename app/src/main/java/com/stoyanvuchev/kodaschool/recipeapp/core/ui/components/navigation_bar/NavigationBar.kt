@@ -44,7 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 
 /**
- * A navigation bar component displaying [NavigationBarItem]s for each navigation destination.
+ * A custom navigation bar component displaying [NavigationBarItem]s for each navigation destination.
  * @param modifier Used for further customization.
  * @param colors Used for styling the navigation bar colors.
  * @param itemLabelTextStyle Used for styling the [NavigationBarItem] label [TextStyle].

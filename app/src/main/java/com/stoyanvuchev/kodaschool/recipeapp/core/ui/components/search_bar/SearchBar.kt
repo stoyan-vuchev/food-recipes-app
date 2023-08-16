@@ -1,3 +1,29 @@
+/*
+ *
+ *   MIT License
+ *
+ *   Copyright (c) 2023 Stoyan Vuchev
+ *
+ *   Permission is hereby granted, free of charge, to any person obtaining a copy
+ *   of this software and associated documentation files (the "Software"), to deal
+ *   in the Software without restriction, including without limitation the rights
+ *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *   copies of the Software, and to permit persons to whom the Software is
+ *   furnished to do so, subject to the following conditions:
+ *
+ *   The above copyright notice and this permission notice shall be included in all
+ *   copies or substantial portions of the Software.
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *   SOFTWARE.
+ *
+ */
+
 package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.search_bar
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
@@ -38,6 +64,21 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 
+/**
+ * A custom search bar component for navigating and performing search queries.
+ * @param modifier allows further customization.
+ * @param queryText the text of the search bar text field.
+ * @param onQueryText the callback invoked whenever a new text is received from the input.
+ * @param queryHint the hint of the search bar text field.
+ * @param mode the mode that defines the search bar behavior.
+ * @param onClickOrImeAction the callback invoked whenever the search bar is clicked
+ * (in [SearchBarMode.Navigate]) or by the keyboard ime action.
+ * @param enabled whether the search bar is enabled or not.
+ * @param colors the colors of the search bar.
+ * @param textStyle the text style of the search bar hint and text field text.
+ * @param shape the shape of the search bar.
+ * @param maxLength the maximum allowed [onQueryText] length.
+ **/
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,

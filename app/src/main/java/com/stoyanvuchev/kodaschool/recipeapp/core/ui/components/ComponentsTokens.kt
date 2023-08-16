@@ -55,14 +55,17 @@ object ComponentsTokens {
 
     data object NavigationBar {
 
-        val containerHeight: Dp get() = 67.0.dp
         val backgroundColor: Color @Composable get() = Theme.colors.background
-        val selectedItemColor: Color @Composable get() = Theme.colors.primary
+        val selectedItemIconBackgroundColor: Color @Composable get() = Theme.colors.primaryContainer
+        val selectedItemIconColor: Color @Composable get() = Theme.colors.onPrimaryContainer
+        val selectedItemLabelColor: Color @Composable get() = Theme.colors.onPrimaryContainer
         val unselectedItemColor: Color @Composable get() = Theme.colors.onBackgroundContainer
 
+        val containerHeight: Dp get() = 72.0.dp
         val itemIconSize: Dp get() = 20.0.dp
+        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 32.0.dp)
         val containerHorizontalSpacing: Dp get() = 8.0.dp
-        val itemContainerVerticalSpacing: Dp get() = 8.0.dp
+        val itemContainerVerticalSpacing: Dp get() = 4.0.dp
 
         val itemLabelTextStyle: TextStyle
             @Composable get() = Theme.typography.regularText.copy(
@@ -113,7 +116,7 @@ object ComponentsTokens {
 
         val horizontalPadding: Dp get() = 10.0.dp
         val verticalPadding: Dp get() = 6.0.dp
-        val defaultMinSize: DpSize get() = DpSize(width = 32.dp, height = 24.dp)
+        val defaultMinSize: DpSize get() = DpSize(width = 32.0.dp, height = 24.0.dp)
 
         val textStyle: TextStyle
             @Composable get() = Theme.typography.regularText.copy(fontWeight = FontWeight.Medium)
@@ -130,7 +133,7 @@ object ComponentsTokens {
         val backgroundColor: Color @Composable get() = Theme.colors.background
         val contentColor: Color @Composable get() = Theme.colors.onBackground
 
-        val iconButtonIconSize: Dp = 24.0.dp
+        // val iconButtonIconSize: Dp = 24.0.dp
         val iconButtonContainerSize: Dp = 48.0.dp
 
         val smallTitleTextStyle: TextStyle
@@ -150,17 +153,46 @@ object ComponentsTokens {
 
     data object SearchBar {
 
-        val borderWidth: Dp get() = 1.dp
-        val containerHeight: Dp get() = 48.dp
-        val horizontalContainerPadding: Dp get() = 24.dp
-        val horizontalContentPadding: Dp get() = 16.dp
-        val iconSize: Dp get() = 18.dp
+        val borderWidth: Dp get() = 1.0.dp
+        val containerHeight: Dp get() = 48.0.dp
+        val horizontalContainerPadding: Dp get() = 24.0.dp
+        val horizontalContentPadding: Dp get() = 16.0.dp
+        val iconSize: Dp get() = 18.0.dp
 
         val borderColor: Color @Composable get() = Theme.colors.outline
         val contentColor: Color @Composable get() = Theme.colors.onBackground
 
         val textStyle: TextStyle @Composable get() = Theme.typography.sectionTitle
         val shape: Shape @Composable get() = Theme.shapes.small
+
+    }
+
+    // Navigation rail
+
+    data object NavigationRail {
+
+        val backgroundColor: Color @Composable get() = Theme.colors.background
+        val selectedItemIconBackgroundColor: Color @Composable get() = Theme.colors.primaryContainer
+        val selectedItemIconColor: Color @Composable get() = Theme.colors.onPrimaryContainer
+        val selectedItemLabelColor: Color @Composable get() = Theme.colors.onPrimaryContainer
+        val unselectedItemColor: Color @Composable get() = Theme.colors.onBackgroundContainer
+
+        val containerWidth: Dp get() = 80.0.dp
+        val contentSpacing: Dp get() = 8.0.dp
+        val headerSpacing: Dp get() = 28.0.dp
+        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 32.0.dp)
+        val itemIconSize: Dp get() = 20.0.dp
+        val itemContainerHorizontalSpacing: Dp get() = 8.0.dp
+        val itemContainerVerticalSpacing: Dp get() = 4.0.dp
+
+        val itemLabelTextStyle: TextStyle
+            @Composable get() = Theme.typography.regularText.copy(
+                fontWeight = FontWeight.Medium
+            )
+
+        val windowInsets: WindowInsets
+            @Composable get() = WindowInsets.systemBarsForUiComponents
+                .only(WindowInsetsSides.Vertical + WindowInsetsSides.Start)
 
     }
 

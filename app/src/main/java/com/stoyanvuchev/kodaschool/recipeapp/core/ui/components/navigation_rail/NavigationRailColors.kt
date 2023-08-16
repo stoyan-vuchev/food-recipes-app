@@ -40,7 +40,7 @@
  *
  */
 
-package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.navigation_bar
+package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.navigation_rail
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -50,15 +50,15 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 /**
- * A custom colors set for styling a [NavigationBar] based on the design system and the Material3 skeleton.
- * @param backgroundColor The background color of the navigation bar.
- * @param selectedItemIconBackgroundColor The icon background color of a navigation bar item.
- * @param selectedItemIconColor The color of the icon on a selected navigation bar item.
- * @param selectedItemLabelColor The color of the selected navigation bar item.
- * @param unselectedItemColor The color of the unselected navigation bar items.
+ * A custom colors set for styling a [NavigationRail] based on the design system and the Material3 skeleton.
+ * @param backgroundColor The background color of the navigation rail.
+ * @param selectedItemIconBackgroundColor The icon background color of a navigation rail item.
+ * @param selectedItemIconColor The color of the icon on a selected navigation rail item.
+ * @param selectedItemLabelColor The color of the selected navigation rail item.
+ * @param unselectedItemColor The color of the unselected navigation rail items.
  **/
 @Immutable
-class NavigationBarColors(
+class NavigationRailColors(
     val backgroundColor: Color,
     private val selectedItemIconBackgroundColor: Color,
     private val selectedItemIconColor: Color,
@@ -67,7 +67,7 @@ class NavigationBarColors(
 ) {
 
     /**
-     * Consumes the icon color of a [NavigationBarItem] as state, depending on whether it's selected or not.
+     * Consumes the icon color of a [NavigationRailItem] as state, depending on whether it's selected or not.
      * @param selected Indicates whether the item is selected or not.
      **/
     @Composable
@@ -78,7 +78,7 @@ class NavigationBarColors(
     }
 
     /**
-     * Consumes the icon background color of a [NavigationBarItem] as state, depending on whether it's selected or not.
+     * Consumes the icon background color of a [NavigationRailItem] as state, depending on whether it's selected or not.
      * @param selected Indicates whether the item is selected or not.
      **/
     @Composable
@@ -89,7 +89,7 @@ class NavigationBarColors(
     }
 
     /**
-     * Consumes the label color of a [NavigationBarItem] as state, depending on whether it's selected or not.
+     * Consumes the label color of a [NavigationRailItem] as state, depending on whether it's selected or not.
      * @param selected Indicates whether the item is selected or not.
      **/
     @Composable
@@ -101,7 +101,7 @@ class NavigationBarColors(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is NavigationBarColors) return false
+        if (other !is NavigationRailColors) return false
         if (backgroundColor != other.backgroundColor) return false
         if (selectedItemIconBackgroundColor != other.selectedItemIconBackgroundColor) return false
         if (selectedItemIconColor != other.selectedItemIconColor) return false
@@ -120,7 +120,7 @@ class NavigationBarColors(
     }
 
     override fun toString(): String {
-        return "NavigationBarColors(" +
+        return "NavigationRailColors(" +
                 "backgroundColor=$backgroundColor, " +
                 "selectedItemIconBackgroundColor=$selectedItemIconBackgroundColor, " +
                 "selectedItemIconColor=$selectedItemIconColor, " +
@@ -131,7 +131,7 @@ class NavigationBarColors(
 
 }
 
-/** CompositionLocal key used for passing [NavigationBarColors] down the composition for consumption. */
-val LocalNavigationBarColors = staticCompositionLocalOf<NavigationBarColors> {
-    error("CompositionLocal LocalNavigationBarColors is not provided.")
+/** CompositionLocal key used for passing [NavigationRailColors] down the composition for consumption. */
+val LocalNavigationRailColors = staticCompositionLocalOf<NavigationRailColors> {
+    error("CompositionLocal LocalNavigationRailColors is not provided.")
 }

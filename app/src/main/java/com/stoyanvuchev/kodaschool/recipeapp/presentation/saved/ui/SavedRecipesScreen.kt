@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.R
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.LocalPaddingValues
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
@@ -47,6 +49,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenState
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
 import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
+import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffoldUtils
 
 @Composable
 fun SavedRecipesScreen(
@@ -58,6 +61,16 @@ fun SavedRecipesScreen(
     val lazyGridState = rememberLazyGridState()
     val categoryBarState = rememberCategoryBarState()
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
+
+    val localPadding = LocalPaddingValues.current
+    val absolutePadding by rememberUpdatedState(
+        PaddingValues(
+            top = 0.dp,
+            start = localPadding.calculateStartPadding(layoutDirection),
+            end = localPadding.calculateEndPadding(layoutDirection),
+            bottom = localPadding.calculateBottomPadding()
+        )
+    )
 
     BackHandler(
         enabled = screenState.category != screenState.categories.first(),
@@ -91,9 +104,11 @@ fun SavedRecipesScreen(
     ResponsiveScaffold(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .padding(absolutePadding),
         containerColor = Theme.colors.background,
         contentColor = Theme.colors.onBackground,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
 
             TopBar(
@@ -157,7 +172,8 @@ fun SavedRecipesScreen(
                     )
 
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                windowInsets = ResponsiveScaffoldUtils.topAppBarWindowInsets()
             )
 
         }
