@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
     suspend fun getRecentRecipes(count: Int): Flow<List<RecipeModel>>
+    suspend fun getRecentRecipesByCategory(category: RecipesCategory): Result<List<RecipeModel>>
     suspend fun getRecipesByCategory(category: RecipesCategory): List<RecipeModel>
     suspend fun getSavedRecipesByCategory(category: RecipesCategory): List<RecipeModel>
     suspend fun getRecipeById(recipeId: String): Flow<Result<RecipeModel>>

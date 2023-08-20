@@ -1,19 +1,24 @@
-package com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui
+package com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stoyanvuchev.kodaschool.recipeapp.R
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.LocalPaddingValues
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.NavigationBarScrim
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
@@ -39,35 +44,27 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBarDefaults
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
-import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenState
-import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.RecentlyViewedScreenState
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.RecentlyViewedScreenUiAction
 import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
 import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffoldUtils
 
 @Composable
-fun SavedRecipesScreen(
-    screenState: SavedRecipesScreenState,
-    onUiAction: (SavedRecipesScreenUiAction) -> Unit
+fun RecentlyViewedScreen(
+    screenState: RecentlyViewedScreenState,
+    onUiAction: (RecentlyViewedScreenUiAction) -> Unit
 ) {
 
     val layoutDirection = LocalLayoutDirection.current
-    val lazyGridState = rememberLazyGridState()
-    val categoryBarState = rememberCategoryBarState()
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
-
-    val localPadding = LocalPaddingValues.current
-    val absolutePadding by rememberUpdatedState(
-        PaddingValues(
-            top = 0.dp,
-            start = localPadding.calculateStartPadding(layoutDirection),
-            end = localPadding.calculateEndPadding(layoutDirection),
-            bottom = localPadding.calculateBottomPadding()
-        )
-    )
+    val categoryBarState = rememberCategoryBarState()
+    val lazyGridState = rememberLazyGridState()
 
     BackHandler(
         enabled = screenState.category != screenState.categories.first(),
-        onBack = { onUiAction(SavedRecipesScreenUiAction.SetCategory(screenState.categories.first())) }
+        onBack = {
+            onUiAction(RecentlyViewedScreenUiAction.SetCategory(screenState.categories.first()))
+        }
     )
 
     LaunchedEffect(key1 = screenState.category) {
@@ -82,57 +79,66 @@ fun SavedRecipesScreen(
         lazyGridState.animateScrollToItem(0, 0)
     }
 
+    val error by rememberUpdatedState(screenState.error.asString())
+
     ResponsiveScaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .padding(absolutePadding),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Theme.colors.background,
         contentColor = Theme.colors.onBackground,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
 
             TopBar(
-                title = stringResource(id = R.string.saved_screen_title),
+                title = stringResource(id = R.string.recently_viewed),
+                navigationButton = {
+
+                    IconButton(
+                        onClick = remember { { onUiAction(RecentlyViewedScreenUiAction.GoBack) } }
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = stringResource(id = R.string.navigate_back)
+                        )
+
+                    }
+
+                },
                 content = {
 
                     CategoryBar(
                         modifier = Modifier.fadingEdges(),
-                        state = categoryBarState,
-                        horizontalContentPadding = 24.dp,
-                        items = {
+                        state = categoryBarState
+                    ) {
 
-                            items(
-                                items = screenState.categories,
-                                key = { "category_$it" },
-                                itemContent = { category ->
+                        items(
+                            items = screenState.categories,
+                            key = { "category_$it" },
+                            itemContent = { category ->
 
-                                    CategoryBarItemContent(
-                                        selected = screenState.category == category,
-                                        onSelected = remember {
-                                            {
-                                                onUiAction(
-                                                    SavedRecipesScreenUiAction.SetCategory(
-                                                        category
-                                                    )
-                                                )
-                                            }
-                                        },
-                                        label = category.name
-                                    )
+                                CategoryBarItemContent(
+                                    selected = screenState.category == category,
+                                    onSelected = remember {
+                                        {
+                                            onUiAction(
+                                                RecentlyViewedScreenUiAction.SetCategory(category)
+                                            )
+                                        }
+                                    },
+                                    label = category.name
+                                )
 
-                                }
-                            )
+                            }
+                        )
 
-                        }
-                    )
+                    }
 
                 },
                 scrollBehavior = scrollBehavior,
                 windowInsets = ResponsiveScaffoldUtils.topAppBarWindowInsets()
             )
 
-        }
+        },
+        bottomBar = { NavigationBarScrim() }
     ) { paddingValues ->
 
         val actualPadding by rememberUpdatedState(
@@ -169,34 +175,54 @@ fun SavedRecipesScreen(
 
             } else {
 
-                items(
-                    items = screenState.recipes,
-                    key = { "saved_recipe_$it" }
-                ) { recipe ->
+                if (error.isEmpty()) {
 
-                    var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
+                    items(
+                        items = screenState.recipes,
+                        key = { "saved_recipe_$it" }
+                    ) { recipe ->
 
-                    RecipeGridItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        recipe = recipe.copy(isBookmarked = isSaved),
-                        enabled = true,
-                        onSave = remember {
-                            {
-                                isSaved = !isSaved
-                                onUiAction(
-                                    SavedRecipesScreenUiAction.SetSaved(
-                                        isSaved,
-                                        recipe.recipeId
+                        var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
+
+                        RecipeGridItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            recipe = recipe.copy(isBookmarked = isSaved),
+                            enabled = true,
+                            onSave = remember {
+                                {
+                                    isSaved = !isSaved
+                                    onUiAction(
+                                        RecentlyViewedScreenUiAction.SetSaved(
+                                            isSaved,
+                                            recipe.recipeId
+                                        )
                                     )
-                                )
+                                }
+                            },
+                            onClick = remember {
+                                { onUiAction(RecentlyViewedScreenUiAction.ViewRecipe(recipe.recipeId)) }
                             }
-                        },
-                        onClick = remember {
-                            { onUiAction(SavedRecipesScreenUiAction.ViewRecipe(recipe.recipeId)) }
-                        }
-                    )
+                        )
+
+                    }
+
+                } else {
+
+                    item(
+                        key = "error_item",
+                        span = { GridItemSpan(this.maxLineSpan) }
+                    ) {
+
+                        Text(
+                            modifier = Modifier.padding(48.dp),
+                            text = error,
+                            style = Theme.typography.sectionTitle,
+                            color = Theme.colors.error
+                        )
+
+                    }
 
                 }
 
@@ -210,10 +236,10 @@ fun SavedRecipesScreen(
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun SavedRecipesScreenPreview() {
+private fun RecentlyViewedScreenPreview() {
     FoodRecipesTheme {
-        SavedRecipesScreen(
-            screenState = SavedRecipesScreenState(),
+        RecentlyViewedScreen(
+            screenState = RecentlyViewedScreenState(),
             onUiAction = {}
         )
     }

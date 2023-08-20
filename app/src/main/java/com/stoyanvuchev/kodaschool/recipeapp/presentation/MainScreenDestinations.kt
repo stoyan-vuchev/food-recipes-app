@@ -33,21 +33,21 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.utils.UiString
 object MainScreenDestinations {
 
     /** Represents the Home screen destination. */
-    object Home : ScreenDestination(
+    data object Home : ScreenDestination(
         route = "main_home_route",
         label = UiString.FromResource(resId = R.string.home_screen_label),
         icon = R.drawable.home_icon
     )
 
     /** Represents the Search screen destination. */
-    object Search : ScreenDestination(
+    data object Search : ScreenDestination(
         route = "main_search_route",
         label = UiString.FromResource(resId = R.string.search_screen_label),
         icon = R.drawable.search_icon
     )
 
     /** Represents the screen for Saved / Bookmarked screen destination.  */
-    object Saved : ScreenDestination(
+    data object Saved : ScreenDestination(
         route = "main_saved_route",
         label = UiString.FromResource(resId = R.string.saved_screen_label),
         icon = R.drawable.saved_icon
@@ -57,7 +57,10 @@ object MainScreenDestinations {
      * Represents Recipe screen destination with a unique ID.
      * - Remember to replace {recipeId} with the actual ID when navigating.
      **/
-    object Recipe : ScreenDestination(route = "main_recipe_route_{recipeId}")
+    data object Recipe : ScreenDestination(route = "main_recipe_route_{recipeId}")
+
+    /** Represents the screen for Recently Viewed recipes. */
+    data object RecentlyViewed : ScreenDestination(route = "main_recently_viewed_route")
 
     /**
      * The route of the [MainScreenDestinations] navigation graph.

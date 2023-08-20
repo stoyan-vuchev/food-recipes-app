@@ -24,6 +24,18 @@ class RecipesRepositoryImpl @Inject constructor(
         return dao.getRecentRecipes(count).map { list -> list.map { it.toRecipeModel() } }
     }
 
+    override suspend fun getRecentRecipesByCategory(
+        category: RecipesCategory
+    ): Result<List<RecipeModel>> {
+        return try {
+            val recipes = dao.getRecentRecipesByCategory(category).map { it.toRecipeModel() }
+            Result.Success(recipes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.Error(Result.uiStringError(e.message))
+        }
+    }
+
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
     ): List<RecipeModel> {

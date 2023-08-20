@@ -62,8 +62,8 @@ object ComponentsTokens {
         val unselectedItemColor: Color @Composable get() = Theme.colors.onBackgroundContainer
 
         val containerHeight: Dp get() = 72.0.dp
-        val itemIconSize: Dp get() = 20.0.dp
-        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 32.0.dp)
+        val itemIconSize: Dp get() = 18.0.dp
+        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 30.0.dp)
         val containerHorizontalSpacing: Dp get() = 8.0.dp
         val itemContainerVerticalSpacing: Dp get() = 4.0.dp
 
@@ -128,7 +128,7 @@ object ComponentsTokens {
     data object TopBar {
 
         val smallContainerHeight: Dp = 64.0.dp
-        val largeContainerHeight: Dp = 150.0.dp
+        val largeContainerHeight: Dp = 175.0.dp
 
         val backgroundColor: Color @Composable get() = Theme.colors.background
         val contentColor: Color @Composable get() = Theme.colors.onBackground
@@ -180,8 +180,8 @@ object ComponentsTokens {
         val containerWidth: Dp get() = 80.0.dp
         val contentSpacing: Dp get() = 8.0.dp
         val headerSpacing: Dp get() = 28.0.dp
-        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 32.0.dp)
-        val itemIconSize: Dp get() = 20.0.dp
+        val itemIconContainerSize: DpSize get() = DpSize(width = 40.0.dp, height = 30.0.dp)
+        val itemIconSize: Dp get() = 18.0.dp
         val itemContainerHorizontalSpacing: Dp get() = 8.0.dp
         val itemContainerVerticalSpacing: Dp get() = 4.0.dp
 
