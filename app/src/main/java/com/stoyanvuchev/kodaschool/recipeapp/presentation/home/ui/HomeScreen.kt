@@ -30,10 +30,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -241,31 +239,24 @@ fun HomeScreen(
                             key = { "recipe_${it.recipeId}" }
                         ) { recipe ->
 
-                            var isBookmarked by remember { mutableStateOf(recipe.isBookmarked) }
-
                             RecipeGridItem(
                                 modifier = Modifier
                                     .width(128.dp)
                                     .animateItemPlacement(),
                                 recipe = recipe,
                                 enabled = true,
-                                onSave = remember {
-                                    {
-                                        isBookmarked = !isBookmarked
-                                        onUiAction(
-                                            HomeScreenUiAction.SaveOrRemoveRecipe(
-                                                recipeId = recipe.recipeId,
-                                                saved = isBookmarked
-                                            )
+                                onSave = {
+                                    onUiAction(
+                                        HomeScreenUiAction.SaveOrRemoveRecipe(
+                                            recipeId = recipe.recipeId,
+                                            saved = !recipe.isBookmarked
                                         )
-                                    }
+                                    )
                                 },
-                                onClick = remember {
-                                    {
-                                        onUiAction(
-                                            HomeScreenUiAction.ViewRecipe(recipeId = recipe.recipeId)
-                                        )
-                                    }
+                                onClick = {
+                                    onUiAction(
+                                        HomeScreenUiAction.ViewRecipe(recipeId = recipe.recipeId)
+                                    )
                                 }
                             )
 
@@ -353,31 +344,24 @@ fun HomeScreen(
                                     key = { "recent_recipe_${it.recipeId}" }
                                 ) { recipe ->
 
-                                    var isBookmarked by remember { mutableStateOf(recipe.isBookmarked) }
-
                                     RecipeGridItem(
                                         modifier = Modifier
                                             .width(128.dp)
                                             .animateItemPlacement(),
                                         recipe = recipe,
                                         enabled = true,
-                                        onSave = remember {
-                                            {
-                                                isBookmarked = !isBookmarked
-                                                onUiAction(
-                                                    HomeScreenUiAction.SaveOrRemoveRecipe(
-                                                        recipeId = recipe.recipeId,
-                                                        saved = isBookmarked
-                                                    )
+                                        onSave = {
+                                            onUiAction(
+                                                HomeScreenUiAction.SaveOrRemoveRecipe(
+                                                    recipeId = recipe.recipeId,
+                                                    saved = !recipe.isBookmarked
                                                 )
-                                            }
+                                            )
                                         },
-                                        onClick = remember {
-                                            {
-                                                onUiAction(
-                                                    HomeScreenUiAction.ViewRecipe(recipeId = recipe.recipeId)
-                                                )
-                                            }
+                                        onClick = {
+                                            onUiAction(
+                                                HomeScreenUiAction.ViewRecipe(recipeId = recipe.recipeId)
+                                            )
                                         }
                                     )
 

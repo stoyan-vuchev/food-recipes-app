@@ -43,8 +43,11 @@ interface LocalDatabaseDao {
     )
     suspend fun getAllRecentRecipesDao(): List<RecipeEntity>
 
-    @Query("SELECT * FROM recipes_table WHERE category LIKE :category")
-    suspend fun getRecipesByCategory(category: RecipesCategory): List<RecipeEntity>
+    @Query("SELECT * FROM recipes_table WHERE category = :category LIMIT 1")
+    suspend fun getByCategoryFirstCheck(category: RecipesCategory): RecipeEntity?
+
+    @Query("SELECT * FROM recipes_table WHERE category = :category")
+    fun getRecipesByCategory(category: RecipesCategory): Flow<List<RecipeEntity>>
 
     suspend fun getSavedRecipesByCategory(
         category: RecipesCategory
@@ -71,10 +74,28 @@ interface LocalDatabaseDao {
     suspend fun getRecipeById(recipeId: String): RecipeEntity?
 
     suspend fun updateRecipeSavedState(
-        recipe: RecipeEntity,
+        recipeId: String,
         saved: Boolean,
         timestamp: Long?
-    ) = updateRecipe(recipe.copy(isBookmarked = saved, bookmarkTimestamp = timestamp))
+    ) {
+        getRecipeById(recipeId)?.let { recipe ->
+            updateRecipe(
+                recipe.copy(
+                    isBookmarked = saved,
+                    bookmarkTimestamp = timestamp
+                )
+            )
+        }
+    }
+
+    suspend fun updateRecipeLastViewedTimestamp(
+        recipeId: String,
+        timestamp: Long?
+    ) {
+        getRecipeById(recipeId)?.let { recipe ->
+            updateRecipe(recipe.copy(lastViewedTimestamp = timestamp))
+        }
+    }
 
     @Update
     suspend fun updateRecipe(recipeEntity: RecipeEntity)

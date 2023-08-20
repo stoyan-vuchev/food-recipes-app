@@ -45,6 +45,7 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
                 val viewModel = hiltViewModel<HomeScreenViewModel>()
                 val screenState by viewModel.state.collectAsStateWithLifecycle()
+                val recentRecipes by viewModel.recentRecipes.collectAsStateWithLifecycle()
                 val categorizedRecipes by viewModel.categorizedRecipes.collectAsStateWithLifecycle()
 
                 LaunchedEffect(key1 = viewModel.uiActionFlow) {
@@ -75,7 +76,7 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
                 HomeScreen(
                     screenState = screenState,
-                    recentRecipes = viewModel.recentRecipes,
+                    recentRecipes = recentRecipes,
                     categorizedRecipes = categorizedRecipes,
                     onUiAction = viewModel::onUiAction
                 )

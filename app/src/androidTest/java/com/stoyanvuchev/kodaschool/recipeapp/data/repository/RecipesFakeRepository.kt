@@ -12,13 +12,14 @@ import com.stoyanvuchev.kodaschool.recipeapp.mappers.toRecipeModel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 class RecipesFakeRepository(
     private val dao: LocalDatabaseDao
 ) : RecipesRepository {
 
-    override suspend fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
+    override fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
         return dao.getRecentRecipes(count).map { it.map { e -> e.toRecipeModel() } }
     }
 
@@ -30,14 +31,14 @@ class RecipesFakeRepository(
             Result.Success(recipes)
         } catch (e: Exception) {
             e.printStackTrace()
-            Result.Error(Result.uiStringError(e.message))
+            Result.Error(uiStringError(e.message))
         }
     }
 
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
-    ): List<RecipeModel> {
-        return dao.getRecipesByCategory(category).map { it.toRecipeModel() }
+    ): Flow<List<RecipeModel>> {
+        return dao.getRecipesByCategory(category).map { l -> l.map { it.toRecipeModel() } }
     }
 
     override suspend fun getSavedRecipesByCategory(category: RecipesCategory): List<RecipeModel> {
@@ -68,12 +69,10 @@ class RecipesFakeRepository(
     }
 
     override suspend fun updateRecipeSavedState(
-        recipe: RecipeEntity,
+        recipeId: String,
         saved: Boolean,
         timestamp: Long?
-    ): Flow<Result<Unit>> {
-        TODO("Not yet implemented")
-    }
+    ): Flow<Result<Unit>> = emptyFlow()
 
     override suspend fun updateRecipe(
         recipeModel: RecipeModel
@@ -86,6 +85,18 @@ class RecipesFakeRepository(
             trySend(Result.Error(uiStringError(e.message)))
         }
         awaitClose { }
+    }
+
+    override suspend fun updateRecipeLastViewedTimestamp(
+        recipeId: String,
+        timestamp: Long?
+    ) = try {
+        dao.updateRecipeLastViewedTimestamp(
+            recipeId = recipeId,
+            timestamp = timestamp
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 
     companion object {
