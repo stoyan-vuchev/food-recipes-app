@@ -147,7 +147,7 @@ fun SavedRecipesScreen(
         LazyVerticalGrid(
             modifier = Modifier.fillMaxSize(),
             state = lazyGridState,
-            columns = GridCells.Adaptive(128.dp),
+            columns = GridCells.Adaptive(150.dp),
             contentPadding = actualPadding,
             userScrollEnabled = !screenState.isLoading
         ) {

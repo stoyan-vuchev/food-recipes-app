@@ -2,7 +2,6 @@ package com.stoyanvuchev.kodaschool.recipeapp.data.repository
 
 import com.stoyanvuchev.kodaschool.recipeapp.core.utils.Result
 import com.stoyanvuchev.kodaschool.recipeapp.data.local.LocalDatabaseDao
-import com.stoyanvuchev.kodaschool.recipeapp.data.local.entity.RecipeEntity
 import com.stoyanvuchev.kodaschool.recipeapp.data.remote.RemoteDataSourceAPI
 import com.stoyanvuchev.kodaschool.recipeapp.domain.RecipesCategory
 import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
@@ -20,16 +19,23 @@ class RecipesRepositoryImpl @Inject constructor(
     private val dao: LocalDatabaseDao
 ) : RecipesRepository {
 
-    override suspend fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
-        return dao.getRecentRecipes(count).map { list -> list.map { it.toRecipeModel() } }
+    override fun getRecentRecipes(count: Int): Flow<List<RecipeModel>> {
+        return dao.getRecentRecipes(count).map { list ->
+            list.distinctBy { it.recipeId }.map { it.toRecipeModel() }
+        }
     }
 
     override suspend fun getRecentRecipesByCategory(
         category: RecipesCategory
     ): Result<List<RecipeModel>> {
         return try {
-            val recipes = dao.getRecentRecipesByCategory(category).map { it.toRecipeModel() }
+
+            val recipes = dao.getRecentRecipesByCategory(category)
+                .distinctBy { it.recipeId }
+                .map { it.toRecipeModel() }
+
             Result.Success(recipes)
+
         } catch (e: Exception) {
             e.printStackTrace()
             Result.Error(Result.uiStringError(e.message))
@@ -38,15 +44,14 @@ class RecipesRepositoryImpl @Inject constructor(
 
     override suspend fun getRecipesByCategory(
         category: RecipesCategory
-    ): List<RecipeModel> {
+    ): Flow<List<RecipeModel>> {
 
-        val recipes = dao.getRecipesByCategory(category)
-        val first = recipes.firstOrNull()
+        if (dao.getByCategoryFirstCheck(category) == null) {
+            getRecipesByCategoryFromRemoteDataSourceAPI(category = category)
+        }
 
-        return if (recipes.isNotEmpty() && first != null) recipes.map { it.toRecipeModel() }
-        else when (val result = getRecipesByCategoryFromRemoteDataSourceAPI(category)) {
-            is Result.Success -> result.data.map { it.toRecipeModel() }
-            else -> emptyList()
+        return dao.getRecipesByCategory(category).map { list ->
+            list.distinctBy { it.recipeId }.map { it.toRecipeModel() }
         }
 
     }
@@ -86,14 +91,21 @@ class RecipesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateRecipeSavedState(
-        recipe: RecipeEntity,
+        recipeId: String,
         saved: Boolean,
         timestamp: Long?
     ): Flow<Result<Unit>> = callbackFlow {
         trySend(Result.Loading())
         try {
-            dao.updateRecipeSavedState(recipe, saved, timestamp)
+
+            dao.updateRecipeSavedState(
+                recipeId = recipeId,
+                saved = saved,
+                timestamp = timestamp
+            )
+
             trySend(Result.Success(Unit))
+
         } catch (e: Exception) {
             e.printStackTrace()
             trySend(Result.Error(Result.uiStringError(e.message)))
@@ -101,9 +113,21 @@ class RecipesRepositoryImpl @Inject constructor(
         awaitClose { }
     }
 
+    override suspend fun updateRecipeLastViewedTimestamp(
+        recipeId: String,
+        timestamp: Long?
+    ) = try {
+        dao.updateRecipeLastViewedTimestamp(
+            recipeId = recipeId,
+            timestamp = timestamp
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
     private suspend fun getRecipesByCategoryFromRemoteDataSourceAPI(
         category: RecipesCategory
-    ): Result<List<RecipeEntity>> = try {
+    ): Result<Unit> = try {
         val response = api.searchByCategory(category = category.stringValue)
         if (response.isSuccessful) {
 
@@ -116,7 +140,7 @@ class RecipesRepositoryImpl @Inject constructor(
                 }
 
                 dao.insertRecipes(recipes)
-                Result.Success(recipes)
+                Result.Success(Unit)
 
             } else {
                 Result.Error(Result.uiStringError())

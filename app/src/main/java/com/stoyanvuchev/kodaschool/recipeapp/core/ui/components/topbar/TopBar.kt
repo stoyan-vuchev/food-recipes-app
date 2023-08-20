@@ -271,7 +271,16 @@ private fun ResizableTopBarLayout(
         }
     }
 
-    val topBarContent: @Composable ColumnScope.() -> Unit = {
+    Column(
+        modifier = Modifier
+            .testTag("top_bar")
+            .fillMaxWidth()
+            .clipToBounds()
+            .background(backgroundColor)
+            .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal))
+            .then(topBarDragModifier)
+            .then(modifier)
+    ) {
 
         CompositionLocalProvider(
             LocalContentColor provides contentColor
@@ -322,38 +331,14 @@ private fun ResizableTopBarLayout(
             }
 
         }
-        
-    }
 
-    val bottomContent: @Composable ColumnScope.() -> Unit = { content?.let { it() } }
+        content?.let { it() }
 
-    Box(
-        modifier = Modifier
-            .testTag("top_bar")
-            .fillMaxWidth()
-            .clipToBounds()
-            .background(backgroundColor)
-            .then(topBarDragModifier)
-            .then(modifier)
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Horizontal)),
-        ) {
-
-            topBarContent()
-
-            bottomContent()
-
-            Divider(
-                modifier = Modifier.alpha(collapsedFraction),
-                color = ComponentsTokens.Separator.color,
-                thickness = ComponentsTokens.Separator.thickness
-            )
-
-        }
+        Divider(
+            modifier = Modifier.alpha(collapsedFraction),
+            color = ComponentsTokens.Separator.color,
+            thickness = ComponentsTokens.Separator.thickness
+        )
 
     }
 

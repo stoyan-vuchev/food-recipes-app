@@ -1,6 +1,5 @@
 package com.stoyanvuchev.kodaschool.recipeapp.presentation.home
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stoyanvuchev.kodaschool.recipeapp.core.utils.Result
@@ -13,10 +12,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,11 +34,15 @@ class HomeScreenViewModel @Inject constructor(
     private val _uiActionChannel = Channel<HomeScreenUiAction>()
     val uiActionFlow = _uiActionChannel.receiveAsFlow()
 
-    private val _recentRecipes = mutableStateListOf<RecipeModel>()
-    val recentRecipes: List<RecipeModel> = _recentRecipes
+    val recentRecipes = repository.getRecentRecipes(20)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
-    private val _categorizedRecipes = mutableStateListOf<RecipeModel>()
-    val categorizedRecipes = MutableStateFlow(_categorizedRecipes).asStateFlow()
+    private val _categorizedRecipes = MutableStateFlow<List<RecipeModel>>(emptyList())
+    val categorizedRecipes = _categorizedRecipes.asStateFlow()
 
     private var categoryLoadJob: Job? = null
     private var categoryDebounceJob: Job? = null
@@ -45,7 +50,6 @@ class HomeScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             delay(256L)
-            getRecentRecipes()
             getRecipesByCategory(category = RecipesCategory.Default)
         }
     }
@@ -73,94 +77,55 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun viewRecipe(uiAction: HomeScreenUiAction.ViewRecipe) {
-
-        val recipe = (_categorizedRecipes + _recentRecipes)
-            .find { it.recipeId == uiAction.recipeId }
-
-        recipe?.let {
-            sendUiAction(uiAction)
-            val updatedRecipe = recipe.copy(lastViewedTimestamp = System.currentTimeMillis())
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.updateRecipe(updatedRecipe).onEach { }.launchIn(this)
+        viewModelScope.launch {
+            val lastViewedTimestamp = System.currentTimeMillis()
+            withContext(Dispatchers.IO) {
+                repository.updateRecipeLastViewedTimestamp(
+                    recipeId = uiAction.recipeId,
+                    timestamp = lastViewedTimestamp
+                )
+                withContext(Dispatchers.Default) {
+                    sendUiAction(uiAction)
+                }
             }
-        }
-
-    }
-
-    private fun getRecentRecipes() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getRecentRecipes(20).onEach {
-                _recentRecipes.clear()
-                _recentRecipes.addAll(it)
-            }.launchIn(this)
         }
     }
 
     private fun getRecipesByCategory(category: RecipesCategory) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             categoryLoadJob?.cancel()
             categoryLoadJob = this.launch {
-                val recipes = repository.getRecipesByCategory(category)
-                onGetRecipesByCategoryResult(recipes)
+                withContext(Dispatchers.IO) {
+                    repository.getRecipesByCategory(category).onEach { recipes ->
+                        withContext(Dispatchers.Default) {
+                            _categorizedRecipes.update { recipes }
+                            _state.update { it.copy(isLoadingCategory = false) }
+                        }
+                    }.launchIn(this)
+                }
             }
-        }
-    }
-
-    private suspend fun onGetRecipesByCategoryResult(recipes: List<RecipeModel>) {
-        withContext(Dispatchers.Default) {
-            _categorizedRecipes.clear()
-            _categorizedRecipes.addAll(recipes)
-            _state.update { it.copy(isLoadingCategory = false) }
         }
     }
 
     private fun setSavedRecipeState(recipeId: String, saved: Boolean) {
-
-        val recipe = (_categorizedRecipes + _recentRecipes)
-            .find { it.recipeId == recipeId }
-
-        recipe?.let {
-
+        viewModelScope.launch {
             val timestamp = if (saved) System.currentTimeMillis() else null
-            val updatedRecipe = recipe.copy(
-                isBookmarked = saved,
-                bookmarkTimestamp = timestamp
-            )
-
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.updateRecipe(updatedRecipe)
-                    .onEach { result ->
-                        onSetSavedRecipeState(
-                            result = result,
-                            recipeId = recipe.recipeId,
-                            updatedRecipe = updatedRecipe
-                        )
-                    }.launchIn(this)
+            withContext(Dispatchers.IO) {
+                repository.updateRecipeSavedState(
+                    recipeId = recipeId,
+                    saved = saved,
+                    timestamp = timestamp
+                ).onEach { onSetSavedRecipeState(it) }.launchIn(this)
             }
-
         }
-
     }
 
-    private fun onSetSavedRecipeState(
-        result: Result<Unit>,
-        recipeId: String,
-        updatedRecipe: RecipeModel
-    ) {
-        when (result) {
-
-            is Result.Success -> {
-                val recipe = _categorizedRecipes.find { it.recipeId == recipeId }
-                recipe?.let {
-                    _categorizedRecipes.set(
-                        index = _categorizedRecipes.indexOf(recipe),
-                        element = updatedRecipe
-                    )
-                }
+    private suspend fun onSetSavedRecipeState(result: Result<Unit>) {
+        withContext(Dispatchers.Default) {
+            when (result) {
+                is Result.Error -> Unit // todo
+                else -> Unit
             }
-
-            else -> Unit
-
         }
     }
 
