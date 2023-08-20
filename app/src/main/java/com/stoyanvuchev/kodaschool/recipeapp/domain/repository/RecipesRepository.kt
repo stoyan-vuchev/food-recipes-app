@@ -6,6 +6,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
+
     fun getRecentRecipes(count: Int): Flow<List<RecipeModel>>
     suspend fun getRecentRecipesByCategory(category: RecipesCategory): Result<List<RecipeModel>>
     suspend fun getRecipesByCategory(category: RecipesCategory): Flow<List<RecipeModel>>
@@ -20,4 +21,10 @@ interface RecipesRepository {
 
     suspend fun updateRecipe(recipeModel: RecipeModel): Flow<Result<Unit>>
     suspend fun updateRecipeLastViewedTimestamp(recipeId: String, timestamp: Long?)
+
+    suspend fun searchForRecipes(
+        category: RecipesCategory,
+        query: String
+    ): Flow<Result<List<RecipeModel>>>
+
 }

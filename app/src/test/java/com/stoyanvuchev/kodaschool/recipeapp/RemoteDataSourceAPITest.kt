@@ -19,13 +19,13 @@ class RemoteDataSourceAPITest {
 
     @Test
     fun `RemoteDataSourceAPI returns successful searchByCategory() response`(): Unit = runBlocking {
-        val response = api.searchByCategory(category = RecipesCategory.Default.stringValue)
+        val response = api.searchRecipesWithCategory(category = RecipesCategory.Default.stringValue)
         assertThat(response.isSuccessful).isTrue()
     }
 
     @Test
     fun `RemoteDataSourceAPI returns successful searchByQuery() response`(): Unit = runBlocking {
-        val response = api.searchByQuery(query = "Pancakes")
+        val response = api.searchRecipesWithoutCategory(query = "Pancakes")
         assertThat(response.isSuccessful).isTrue()
     }
 

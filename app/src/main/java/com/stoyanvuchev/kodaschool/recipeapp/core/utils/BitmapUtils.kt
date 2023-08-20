@@ -47,6 +47,31 @@ object BitmapUtils {
         // If [imageUrl] is not null, do the following, otherwise return null.
         imageUrl?.let { url ->
 
+            // Decode a [Bitmap] from the [url] and convert it into a [ByteArray].
+            val byteArray = getBitmapFromImageUrl(url).toByteArray()
+
+            // Return the [byteArray].
+            byteArray
+
+        }
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+
+    /**
+     * Returns a nullable [Bitmap] from an image url.
+     * This operation is exhaustive and it's NOT recommended.
+     * The only reason for using it is because the image urls from the API
+     * are valid for a short period of time, and the cached urls will expire.
+     * @param imageUrl The URL address of the image.
+     **/
+    fun getBitmapFromImageUrl(imageUrl: String?): Bitmap? = try {
+
+        // If [imageUrl] is not null, do the following, otherwise return null.
+        imageUrl?.let { url ->
+
             // Open [URL] connection from the [url].
             val connection = (URL(url).openConnection() as HttpURLConnection)
                 .apply {
@@ -54,16 +79,16 @@ object BitmapUtils {
                     this.connect()
                 }
 
-            // Decode a [Bitmap] and convert it into a [ByteArray].
-            val byteArray = connection.inputStream.use { inputStream ->
-                BitmapFactory.decodeStream(inputStream).toByteArray()
+            // Decode a [Bitmap] from the input stream.
+            val bitmap = connection.inputStream.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
             }
 
             // Close the [URL] connection.
             connection.disconnect()
 
-            // Return the [byteArray].
-            byteArray
+            // Return the [bitmap].
+            bitmap
 
         }
 

@@ -69,7 +69,7 @@ class RecipesRepositoryImpl @Inject constructor(
             if (entity != null) {
                 trySend(Result.Success(entity.toRecipeModel()))
             } else {
-                getRecipeFromRemoteDataSourceAPI(recipeId)
+                trySend(getRecipeFromRemoteDataSourceAPI(recipeId))
             }
         } catch (e: Exception) {
             trySend(Result.Error(Result.uiStringError(e.message)))
@@ -125,10 +125,49 @@ class RecipesRepositoryImpl @Inject constructor(
         e.printStackTrace()
     }
 
+    override suspend fun searchForRecipes(
+        category: RecipesCategory,
+        query: String
+    ): Flow<Result<List<RecipeModel>>> = callbackFlow {
+        trySend(Result.Loading())
+        try {
+
+            val response = if (category == RecipesCategory.All) {
+                api.searchRecipesWithoutCategory(query = query)
+            } else api.searchRecipesWithCategory(
+                category = category.stringValue,
+                query = query
+            )
+
+            if (response.isSuccessful) {
+
+                val result = response.body()
+                if (result != null) {
+
+                    val timestamp = System.currentTimeMillis()
+                    val recipes = result.hits.map { it.recipe.toRecipeModel(timestamp) }
+
+                    trySend(Result.Success(recipes))
+
+                } else {
+                    trySend(Result.Error(Result.uiStringError()))
+                }
+
+            } else {
+                trySend(Result.Error(Result.uiStringError()))
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            trySend(Result.Error(Result.uiStringError(e.message)))
+        }
+        awaitClose { }
+    }
+
     private suspend fun getRecipesByCategoryFromRemoteDataSourceAPI(
         category: RecipesCategory
     ): Result<Unit> = try {
-        val response = api.searchByCategory(category = category.stringValue)
+        val response = api.searchRecipesWithCategory(category = category.stringValue)
         if (response.isSuccessful) {
 
             val responseBody = response.body()
@@ -156,33 +195,37 @@ class RecipesRepositoryImpl @Inject constructor(
 
     private suspend fun getRecipeFromRemoteDataSourceAPI(
         recipeId: String
-    ): Result<RecipeModel> = try {
-        val response = api.getRecipeById(recipeId = recipeId)
-        if (response.isSuccessful) {
+    ): Result<RecipeModel> {
+        return try {
+            val response = api.getRecipeById(recipeId = recipeId)
+            if (response.isSuccessful) {
 
-            val responseBody = response.body()
-            if (responseBody != null) {
+                val responseBody = response.body()
+                if (responseBody != null) {
 
-                val timestamp = System.currentTimeMillis()
-                val recipeEntity = responseBody.toRecipeEntity(timestamp)
-                dao.updateRecipe(recipeEntity)
+                    val timestamp = System.currentTimeMillis()
+                    val recipeEntity = responseBody.recipe.toRecipeEntity(timestamp)
 
-                val entity = dao.getRecipeById(recipeId)
-                if (entity != null) {
-                    Result.Success(entity.toRecipeModel())
+                    dao.insertRecipe(recipeEntity)
+                    dao.updateRecipeLastViewedTimestamp(recipeEntity.recipeId, timestamp)
+
+                    val recipe = dao.getRecipeById(recipeId)?.toRecipeModel()
+                    if (recipe != null) {
+                        Result.Success(recipe)
+                    } else {
+                        Result.Error(Result.uiStringError())
+                    }
+
                 } else {
-                    Result.Success(recipeEntity.toRecipeModel())
+                    Result.Error(Result.uiStringError())
                 }
 
             } else {
                 Result.Error(Result.uiStringError())
             }
-
-        } else {
-            Result.Error(Result.uiStringError())
+        } catch (e: Exception) {
+            Result.Error(Result.uiStringError(e.message))
         }
-    } catch (e: Exception) {
-        Result.Error(Result.uiStringError(e.message))
     }
 
 }

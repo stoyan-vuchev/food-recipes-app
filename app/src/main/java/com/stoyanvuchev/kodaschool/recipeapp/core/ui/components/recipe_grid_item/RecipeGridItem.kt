@@ -34,6 +34,7 @@ fun RecipeGridItem(
     modifier: Modifier = Modifier,
     recipe: RecipeModel,
     enabled: Boolean,
+    isSaveButtonVisible: Boolean = true,
     onSave: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -70,21 +71,6 @@ fun RecipeGridItem(
                 .background(color = Theme.colors.backgroundContainer)
         )
 
-        /*AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(Theme.shapes.medium)
-                .background(color = Theme.colors.backgroundContainer),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(recipe.thumbnail)
-                .crossfade(true)
-                .diskCacheKey(recipe.recipeId + "_thumbnail")
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )*/
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,11 +88,15 @@ fun RecipeGridItem(
 
         }
 
-        RecipeGridItemSaveButton(
-            saved = recipe.isBookmarked,
-            enabled = enabled,
-            onClick = onSave
-        )
+        if (isSaveButtonVisible) {
+
+            RecipeGridItemSaveButton(
+                saved = recipe.isBookmarked,
+                enabled = enabled,
+                onClick = onSave
+            )
+
+        }
 
     }
 
