@@ -15,4 +15,7 @@
     <string name="no_procedures_available">No procedures available.</string>
     <string name="view_full_details">View full details</string>
     <string name="search_query_hint">Search for recipes</string>
+    <string name="recently_viewed">Recently viewed</string>
+    <string name="see_all">See all</string>
+    <string name="category">Category</string>
 </resources>

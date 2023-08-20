@@ -21,6 +21,9 @@ import androidx.navigation.navArgument
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.HomeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.home.ui.HomeScreen
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.RecentlyViewedScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.RecentlyViewedScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.recently_viewed.ui.RecentlyViewedScreen
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.RecipeScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.ui.RecipeScreen
@@ -50,6 +53,10 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
                             is HomeScreenUiAction.Search -> navController.navigate(
                                 route = MainScreenDestinations.Search.route
+                            ) { launchSingleTop = true }
+
+                            is HomeScreenUiAction.SeeAllRecentlyViewed -> navController.navigate(
+                                route = MainScreenDestinations.RecentlyViewed.route
                             ) { launchSingleTop = true }
 
                             is HomeScreenUiAction.ViewRecipe -> navController.navigate(
@@ -153,6 +160,41 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
                 }
 
                 RecipeScreen(
+                    screenState = screenState,
+                    onUiAction = viewModel::onUiAction
+                )
+
+            }
+        )
+
+        composable(
+            route = MainScreenDestinations.RecentlyViewed.route,
+            content = {
+
+                val viewModel = hiltViewModel<RecentlyViewedScreenViewModel>()
+                val screenState by viewModel.state.collectAsStateWithLifecycle()
+
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
+
+                            is RecentlyViewedScreenUiAction.GoBack -> navController.navigateUp()
+
+                            is RecentlyViewedScreenUiAction.ViewRecipe -> navController.navigate(
+                                route = MainScreenDestinations.Recipe.route
+                                    .replace(
+                                        "{recipeId}",
+                                        uiAction.recipeId
+                                    )
+                            ) { launchSingleTop = true }
+
+                            else -> Unit
+
+                        }
+                    }
+                }
+
+                RecentlyViewedScreen(
                     screenState = screenState,
                     onUiAction = viewModel::onUiAction
                 )

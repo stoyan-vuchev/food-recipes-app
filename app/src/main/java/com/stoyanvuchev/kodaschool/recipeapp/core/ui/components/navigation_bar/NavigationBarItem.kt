@@ -96,6 +96,9 @@ fun NavigationBarScope.NavigationBarItem(
             .fillMaxHeight()
             .weight(1f)
             .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Tab,
                 enabled = !selected,
                 onClick = onSelected
             ),

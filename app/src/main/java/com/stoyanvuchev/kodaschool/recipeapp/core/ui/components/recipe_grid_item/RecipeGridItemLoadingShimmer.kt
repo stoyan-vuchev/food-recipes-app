@@ -63,7 +63,7 @@ fun RecipeGridItemLoadingShimmer(
     modifier: Modifier = Modifier
 ) {
 
-    var intSize by remember { mutableStateOf(IntSize(128, 214)) }
+    var intSize by remember { mutableStateOf(IntSize(128, 216)) }
     val transition = rememberInfiniteTransition(label = "")
     val startOffsetX by transition.animateFloat(
         initialValue = -4 * intSize.width.toFloat(),
@@ -124,7 +124,7 @@ fun RecipeGridItemLoadingShimmer(
                 )
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Box(
             modifier = Modifier

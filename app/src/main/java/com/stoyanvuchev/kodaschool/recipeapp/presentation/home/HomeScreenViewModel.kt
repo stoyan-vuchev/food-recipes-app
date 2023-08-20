@@ -60,6 +60,7 @@ class HomeScreenViewModel @Inject constructor(
         when (uiAction) {
 
             is HomeScreenUiAction.Search -> sendUiAction(uiAction)
+            is HomeScreenUiAction.SeeAllRecentlyViewed -> sendUiAction(uiAction)
             is HomeScreenUiAction.SetCategory -> setCategory(uiAction.category)
             is HomeScreenUiAction.ViewRecipe -> viewRecipe(uiAction)
 

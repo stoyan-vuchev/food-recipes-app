@@ -23,6 +23,26 @@ interface LocalDatabaseDao {
     )
     fun getRecentRecipes(count: Int): Flow<List<RecipeEntity>>
 
+    suspend fun getRecentRecipesByCategory(
+        category: RecipesCategory
+    ) = if (category == RecipesCategory.All) getAllRecentRecipesDao()
+    else getRecentRecipesByCategoryDao(category)
+
+    @Query(
+        "SELECT * FROM recipes_table " +
+                "WHERE last_viewed_timestamp IS NOT NULL " +
+                "AND category = :category " +
+                "ORDER BY last_viewed_timestamp DESC"
+    )
+    suspend fun getRecentRecipesByCategoryDao(category: RecipesCategory): List<RecipeEntity>
+
+    @Query(
+        "SELECT * FROM recipes_table " +
+                "WHERE last_viewed_timestamp IS NOT NULL " +
+                "ORDER BY last_viewed_timestamp DESC"
+    )
+    suspend fun getAllRecentRecipesDao(): List<RecipeEntity>
+
     @Query("SELECT * FROM recipes_table WHERE category LIKE :category")
     suspend fun getRecipesByCategory(category: RecipesCategory): List<RecipeEntity>
 
@@ -59,7 +79,7 @@ interface LocalDatabaseDao {
     @Update
     suspend fun updateRecipe(recipeEntity: RecipeEntity)
 
-   @Upsert
-   suspend fun upsertRecipes(recipes: List<RecipeEntity>)
+    @Upsert
+    suspend fun upsertRecipes(recipes: List<RecipeEntity>)
 
 }
