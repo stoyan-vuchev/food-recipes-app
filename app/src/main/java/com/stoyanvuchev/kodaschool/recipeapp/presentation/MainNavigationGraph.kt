@@ -1,15 +1,8 @@
 package com.stoyanvuchev.kodaschool.recipeapp.presentation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -30,6 +23,9 @@ import com.stoyanvuchev.kodaschool.recipeapp.presentation.recipe.ui.RecipeScreen
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui.SavedRecipesScreen
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.ui.SearchScreen
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
@@ -88,17 +84,31 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
             route = MainScreenDestinations.Search.route,
             content = {
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .testTag("test_tag_search_screen"),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                val viewModel = hiltViewModel<SearchScreenViewModel>()
+                val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-                    Text(text = MainScreenDestinations.Search.label?.asString() ?: "")
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
 
+                            is SearchScreenUiAction.ViewRecipe -> navController.navigate(
+                                route = MainScreenDestinations.Recipe.route
+                                    .replace(
+                                        "{recipeId}",
+                                        uiAction.recipeId
+                                    )
+                            ) { launchSingleTop = true }
+
+                            else -> Unit
+
+                        }
+                    }
                 }
+
+                SearchScreen(
+                    screenState = screenState,
+                    onUiAction = viewModel::onUiAction
+                )
 
             }
         )

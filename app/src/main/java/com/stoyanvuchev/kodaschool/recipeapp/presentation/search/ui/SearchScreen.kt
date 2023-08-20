@@ -1,13 +1,12 @@
-package com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui
+package com.stoyanvuchev.kodaschool.recipeapp.presentation.search.ui
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -16,17 +15,21 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import com.stoyanvuchev.kodaschool.recipeapp.R
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.LocalPaddingValues
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
@@ -35,27 +38,33 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.fadingEdges
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItemLoadingShimmer
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.search_bar.SearchBar
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.search_bar.SearchBarMode
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.topbar.TopBarDefaults
-import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.Theme
-import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenState
-import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.SavedRecipesScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenState
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenUiAction
 import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffold
 import com.stoyanvuchev.responsive_scaffold.ResponsiveScaffoldUtils
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SavedRecipesScreen(
-    screenState: SavedRecipesScreenState,
-    onUiAction: (SavedRecipesScreenUiAction) -> Unit
+fun SearchScreen(
+    screenState: SearchScreenState,
+    onUiAction: (SearchScreenUiAction) -> Unit
 ) {
 
-    val layoutDirection = LocalLayoutDirection.current
-    val lazyGridState = rememberLazyGridState()
-    val categoryBarState = rememberCategoryBarState()
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
+    val categoryBarState = rememberCategoryBarState()
+    val lazyGridState = rememberLazyGridState()
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val localPadding = LocalPaddingValues.current
+    val layoutDirection = LocalLayoutDirection.current
     val absolutePadding by rememberUpdatedState(
         PaddingValues(
             top = 0.dp,
@@ -65,10 +74,19 @@ fun SavedRecipesScreen(
         )
     )
 
-    BackHandler(
-        enabled = screenState.category != screenState.categories.first(),
-        onBack = { onUiAction(SavedRecipesScreenUiAction.SetCategory(screenState.categories.first())) }
-    )
+    val searchBarTopSpacerHeight by remember(scrollBehavior.state) {
+        derivedStateOf {
+            lerp(
+                start = 24.dp,
+                stop = 0.dp,
+                fraction = scrollBehavior.state.collapsedFraction
+            )
+        }
+    }
+
+    LaunchedEffect(key1 = screenState.searchResults) {
+        lazyGridState.animateScrollToItem(0, 0)
+    }
 
     LaunchedEffect(key1 = screenState.category) {
         categoryBarState.animateScrollToItem(
@@ -78,23 +96,45 @@ fun SavedRecipesScreen(
         )
     }
 
-    LaunchedEffect(key1 = screenState.isLoading) {
-        lazyGridState.animateScrollToItem(0, 0)
+    LaunchedEffect(key1 = Unit) {
+        delay(512L)
+        focusManager.moveFocus(FocusDirection.Up)
+        keyboardController?.show()
     }
 
     ResponsiveScaffold(
         modifier = Modifier
             .fillMaxSize()
+            .testTag("test_tag_search_screen")
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .padding(absolutePadding),
         containerColor = Theme.colors.background,
         contentColor = Theme.colors.onBackground,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
 
             TopBar(
-                title = stringResource(id = R.string.saved_screen_title),
+                title = stringResource(id = R.string.search_screen_top_bar_title),
                 content = {
+
+                    Spacer(modifier = Modifier.height(searchBarTopSpacerHeight))
+
+                    SearchBar(
+                        queryText = screenState.searchQueryText,
+                        onQueryText = remember {
+                            { onUiAction(SearchScreenUiAction.SetSearchQueryText(it)) }
+                        },
+                        queryHint = stringResource(id = R.string.search_query_hint),
+                        onClickOrImeAction = remember {
+                            {
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                onUiAction(SearchScreenUiAction.Search)
+                            }
+                        },
+                        mode = SearchBarMode.Search
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     CategoryBar(
                         modifier = Modifier.fadingEdges(),
@@ -111,11 +151,7 @@ fun SavedRecipesScreen(
                                         selected = screenState.category == category,
                                         onSelected = remember {
                                             {
-                                                onUiAction(
-                                                    SavedRecipesScreenUiAction.SetCategory(
-                                                        category
-                                                    )
-                                                )
+                                                onUiAction(SearchScreenUiAction.SetCategory(category))
                                             }
                                         },
                                         label = category.name
@@ -149,20 +185,21 @@ fun SavedRecipesScreen(
             state = lazyGridState,
             columns = GridCells.Adaptive(150.dp),
             contentPadding = actualPadding,
-            userScrollEnabled = !screenState.isLoading
+            userScrollEnabled = !screenState.isSearching
         ) {
 
-            if (screenState.isLoading) {
+            if (screenState.isSearching) {
 
                 items(
                     count = 20,
-                    key = { "saved_recipe_placeholder_$it" }
+                    key = { "search_result_recipe_placeholder_$it" }
                 ) {
 
                     RecipeGridItemLoadingShimmer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp)
+                            .padding(12.dp),
+                        isSaveButtonVisible = false
                     )
 
                 }
@@ -170,31 +207,20 @@ fun SavedRecipesScreen(
             } else {
 
                 items(
-                    items = screenState.recipes,
-                    key = { "saved_recipe_$it" }
+                    items = screenState.searchResults,
+                    key = { "search_result_recipe_$it" }
                 ) { recipe ->
-
-                    var isSaved by remember { mutableStateOf(recipe.isBookmarked) }
 
                     RecipeGridItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        recipe = recipe.copy(isBookmarked = isSaved),
+                        recipe = recipe,
                         enabled = true,
-                        onSave = remember {
-                            {
-                                isSaved = !isSaved
-                                onUiAction(
-                                    SavedRecipesScreenUiAction.SetSaved(
-                                        isSaved,
-                                        recipe.recipeId
-                                    )
-                                )
-                            }
-                        },
+                        isSaveButtonVisible = false,
+                        onSave = remember { {} },
                         onClick = remember {
-                            { onUiAction(SavedRecipesScreenUiAction.ViewRecipe(recipe.recipeId)) }
+                            { onUiAction(SearchScreenUiAction.ViewRecipe(recipe.recipeId)) }
                         }
                     )
 
@@ -206,15 +232,4 @@ fun SavedRecipesScreen(
 
     }
 
-}
-
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun SavedRecipesScreenPreview() {
-    FoodRecipesTheme {
-        SavedRecipesScreen(
-            screenState = SavedRecipesScreenState(),
-            onUiAction = {}
-        )
-    }
 }

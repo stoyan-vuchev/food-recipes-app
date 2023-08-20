@@ -99,6 +99,11 @@ class RecipesFakeRepository(
         e.printStackTrace()
     }
 
+    override suspend fun searchForRecipes(
+        category: RecipesCategory,
+        query: String
+    ): Flow<Result<List<RecipeModel>>> = emptyFlow()
+
     companion object {
 
         val fakeRecipes = listOf(

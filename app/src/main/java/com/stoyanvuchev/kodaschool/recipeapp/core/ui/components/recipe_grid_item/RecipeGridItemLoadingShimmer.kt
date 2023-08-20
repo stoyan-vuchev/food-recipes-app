@@ -60,10 +60,19 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.shape.ShapeTokens
 
 @Composable
 fun RecipeGridItemLoadingShimmer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isSaveButtonVisible: Boolean = true,
 ) {
 
-    var intSize by remember { mutableStateOf(IntSize(128, 216)) }
+    var intSize by remember {
+        mutableStateOf(
+            IntSize(
+                width = 128,
+                height = 188 + if (isSaveButtonVisible) 28 else 0
+            )
+        )
+    }
+
     val transition = rememberInfiniteTransition(label = "")
     val startOffsetX by transition.animateFloat(
         initialValue = -4 * intSize.width.toFloat(),
@@ -138,15 +147,19 @@ fun RecipeGridItemLoadingShimmer(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Box(
-            modifier = Modifier
-                .width(72.dp)
-                .height(28.dp)
-                .background(
-                    brush = shimmerBrush,
-                    shape = ShapeTokens.ExtraLargeShape
-                )
-        )
+        if (isSaveButtonVisible) {
+
+            Box(
+                modifier = Modifier
+                    .width(72.dp)
+                    .height(28.dp)
+                    .background(
+                        brush = shimmerBrush,
+                        shape = ShapeTokens.ExtraLargeShape
+                    )
+            )
+
+        }
 
     }
 
