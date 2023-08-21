@@ -19,4 +19,7 @@
     <string name="see_all">See all</string>
     <string name="category">Category</string>
     <string name="search_screen_top_bar_title">Discover the best recipes!</string>
+    <string name="splash_screen_title">Get ready to cook like a pro</string>
+    <string name="splash_screen_description">Master the art of cooking with a stunning recipes and step-by-step instructions.</string>
+    <string name="splash_screen_button_text">Let\'s Start</string>
 </resources>
