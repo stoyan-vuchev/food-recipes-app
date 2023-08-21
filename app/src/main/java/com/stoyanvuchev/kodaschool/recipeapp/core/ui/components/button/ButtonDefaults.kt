@@ -42,11 +42,11 @@
 
 package com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.button
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.ComponentsTokens
 
@@ -79,11 +79,12 @@ object ButtonDefaults {
     /** The default Button text style. */
     val textStyle: TextStyle @Composable get() = ComponentsTokens.Button.textStyle
 
-    /** Horizontal padding for the Button content. */
-    val horizontalPadding: Dp get() = ComponentsTokens.Button.horizontalPadding
-
-    /** Vertical padding for the Button content. */
-    val verticalPadding: Dp get() = ComponentsTokens.Button.verticalPadding
+    /** Padding values for the Button content. */
+    val paddingValues: PaddingValues
+        get() = PaddingValues(
+            horizontal = ComponentsTokens.Button.horizontalPadding,
+            vertical = ComponentsTokens.Button.verticalPadding
+        )
 
     /** The default minimum size of the Button. */
     val defaultMinSize: DpSize get() = ComponentsTokens.Button.defaultMinSize

@@ -31,6 +31,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
@@ -55,6 +56,7 @@ import androidx.compose.ui.text.TextStyle
  * @param colors The Button colors.
  * @param shape The Button shape.
  * @param textStyle Applies a [TextStyle] to the Button text.
+ * @param contentPadding The padding values of the Button content.
  * @param content The content of the Button.
  **/
 @Composable
@@ -65,6 +67,7 @@ fun Button(
     colors: ButtonColors = ButtonDefaults.colors(),
     shape: Shape = ButtonDefaults.shape,
     textStyle: TextStyle = ButtonDefaults.textStyle,
+    contentPadding: PaddingValues = ButtonDefaults.paddingValues,
     content: @Composable RowScope.() -> Unit
 ) {
 
@@ -101,10 +104,7 @@ fun Button(
                         role = Role.Button,
                         onClick = onClick
                     )
-                    .padding(
-                        horizontal = ButtonDefaults.horizontalPadding,
-                        vertical = ButtonDefaults.verticalPadding
-                    ),
+                    .padding(paddingValues = contentPadding),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 content = content

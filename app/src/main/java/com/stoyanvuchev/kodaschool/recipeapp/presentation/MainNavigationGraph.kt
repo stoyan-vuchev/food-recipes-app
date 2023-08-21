@@ -26,14 +26,45 @@ import com.stoyanvuchev.kodaschool.recipeapp.presentation.saved.ui.SavedRecipesS
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenUiAction
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.SearchScreenViewModel
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.search.ui.SearchScreen
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.splash.SplashScreenUiAction
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.splash.SplashScreenViewModel
+import com.stoyanvuchev.kodaschool.recipeapp.presentation.splash.ui.SplashScreen
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
 
     navigation(
-        startDestination = MainScreenDestinations.Home.route,
+        startDestination = MainScreenDestinations.Splash.route,
         route = MainScreenDestinations.route
     ) {
+
+        composable(
+            route = MainScreenDestinations.Splash.route,
+            content = {
+
+                val viewModel = hiltViewModel<SplashScreenViewModel>()
+                val isSetupCompleted by viewModel.isSetupCompleted.collectAsStateWithLifecycle()
+
+                LaunchedEffect(key1 = viewModel.uiActionFlow) {
+                    viewModel.uiActionFlow.collectLatest { uiAction ->
+                        when (uiAction) {
+                            is SplashScreenUiAction.CompleteSetup -> navController.navigate(
+                                MainScreenDestinations.Home.route
+                            ) {
+                                popUpTo(MainScreenDestinations.Splash.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                }
+
+                SplashScreen(
+                    isSetupCompleted = isSetupCompleted,
+                    onUiAction = viewModel::onUiAction
+                )
+
+            }
+        )
 
         composable(
             route = MainScreenDestinations.Home.route,

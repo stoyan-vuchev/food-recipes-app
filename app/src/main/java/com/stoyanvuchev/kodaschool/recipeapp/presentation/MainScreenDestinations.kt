@@ -32,6 +32,9 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.utils.UiString
 /** Contains all main screen destinations. */
 object MainScreenDestinations {
 
+    /** Represents the Splash screen destination. */
+    data object Splash : ScreenDestination(route = "main_splash_route")
+
     /** Represents the Home screen destination. */
     data object Home : ScreenDestination(
         route = "main_home_route",
