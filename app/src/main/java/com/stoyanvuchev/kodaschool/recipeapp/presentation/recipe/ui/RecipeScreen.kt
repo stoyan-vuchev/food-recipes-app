@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toDrawable
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.stoyanvuchev.kodaschool.recipeapp.R
@@ -68,12 +67,9 @@ fun RecipeScreen(
 
     val lazyListState = rememberLazyListState()
     val scrollBehavior = TopBarDefaults.exitUntilCollapsedScrollBehavior()
-    val context = LocalContext.current
-
     val imageModel by rememberUpdatedState(
         ImageRequest.Builder(LocalContext.current)
-            .data(screenState.recipe.imageRegular)
-            .fallback(screenState.recipe.thumbnail?.toDrawable(context.resources))
+            .data(screenState.recipe.image)
             .allowConversionToBitmap(true)
             .crossfade(true)
             .build()

@@ -32,20 +32,13 @@ data class RecipeEntity(
     val source: String,
     val url: String,
 
-    @ColumnInfo(name = "image_thumbnail")
-    val imageThumbnail: String,
-    @ColumnInfo(name = "image_small")
-    val imageSmall: String,
-    @ColumnInfo(name = "image_regular")
-    val imageRegular: String,
-    @ColumnInfo(name = "image_large")
-    val imageLarge: String,
-
-    val thumbnail: ByteArray?
+    val thumbnail: ByteArray?,
+    val image: ByteArray?
 
 ) {
 
     override fun equals(other: Any?): Boolean {
+
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
@@ -63,16 +56,19 @@ data class RecipeEntity(
         if (instructions != other.instructions) return false
         if (source != other.source) return false
         if (url != other.url) return false
-        if (imageThumbnail != other.imageThumbnail) return false
-        if (imageSmall != other.imageSmall) return false
-        if (imageRegular != other.imageRegular) return false
-        if (imageLarge != other.imageLarge) return false
+
         if (thumbnail != null) {
             if (other.thumbnail == null) return false
             if (!thumbnail.contentEquals(other.thumbnail)) return false
         } else if (other.thumbnail != null) return false
 
+        if (image != null) {
+            if (other.image == null) return false
+            if (!image.contentEquals(other.image)) return false
+        } else if (other.image != null) return false
+
         return true
+
     }
 
     override fun hashCode(): Int {
@@ -88,11 +84,8 @@ data class RecipeEntity(
         result = 31 * result + instructions.hashCode()
         result = 31 * result + source.hashCode()
         result = 31 * result + url.hashCode()
-        result = 31 * result + imageThumbnail.hashCode()
-        result = 31 * result + imageSmall.hashCode()
-        result = 31 * result + imageRegular.hashCode()
-        result = 31 * result + imageLarge.hashCode()
         result = 31 * result + (thumbnail?.contentHashCode() ?: 0)
+        result = 31 * result + (image?.contentHashCode() ?: 0)
         return result
     }
 

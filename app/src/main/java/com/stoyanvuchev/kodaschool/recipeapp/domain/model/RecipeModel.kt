@@ -18,9 +18,6 @@ data class RecipeModel(
     val instructions: List<String> = emptyList(),
     val source: String = "",
     val url: String = "",
-    val imageThumbnail: String = "",
-    val imageSmall: String = "",
-    val imageRegular: String = "",
-    val imageLarge: String = "",
-    val thumbnail: Bitmap? = null
+    val thumbnail: Bitmap? = null,
+    val image: Bitmap? = null
 )
