@@ -22,4 +22,8 @@
     <string name="splash_screen_title">Get ready to cook like a pro</string>
     <string name="splash_screen_description">Master the art of cooking with a stunning recipes and step-by-step instructions.</string>
     <string name="splash_screen_button_text">Let\'s Start</string>
+    <string name="saved_screen_list_empty_state_text">You don\'t have any saved recipes\nfor this category.</string>
+    <string name="search_screen_list_empty_state_text">No recipes found.</string>
+    <string name="home_screen_category_list_empty_state_text">No recipes found.</string>
+    <string name="recently_viewed_screen_list_empty_state_text">You haven\'t seen any recipes\nfor this category.</string>
 </resources>

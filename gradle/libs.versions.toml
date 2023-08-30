@@ -1,7 +1,7 @@
 [versions]
 
 # Gradle
-agp = "8.1.0"
+agp = "8.1.1"
 org-jetbrains-kotlin-android = "1.9.0"
 
 # Annotations Procesing
@@ -23,7 +23,7 @@ compose-compiler = "1.5.1"
 
 # Squircle Shape & Responive Scaffold
 stoyan-vuchev-squircle-shape = "1.0.4"
-stoyan-vuchev-responsive-scaffold = "1.0.0"
+stoyan-vuchev-responsive-scaffold = "1.0.1"
 
 # Google Accompanist
 google-accompanist = "0.30.1"
@@ -80,6 +80,7 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 
 # Squircle Shape & Responsive Scaffold
 stoyan-vuchev-squircle-shape = { group = "com.github.stoyan-vuchev", name = "squircle-shape", version.ref = "stoyan-vuchev-squircle-shape" }

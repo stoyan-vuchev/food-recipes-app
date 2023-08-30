@@ -50,6 +50,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.button.ButtonDef
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.empty_states.EmptyStateText
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.fadingEdges
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItemLoadingShimmer
@@ -233,6 +234,21 @@ fun HomeScreen(
                         )
 
                     } else {
+
+                        if (categorizedRecipes.isEmpty()) {
+
+                            item(key = "empty_state_list_item") {
+
+                                EmptyStateText(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 56.dp),
+                                    text = stringResource(id = R.string.home_screen_category_list_empty_state_text)
+                                )
+
+                            }
+
+                        }
 
                         items(
                             items = categorizedRecipes,
