@@ -19,9 +19,6 @@ fun RecipeResponse.toRecipeModel(timestamp: Long) = RecipeModel(
     instructions = instructions?.requireNoNulls()?.distinct() ?: emptyList(),
     source = source,
     url = url,
-    imageThumbnail = images.thumbnail?.url ?: "",
-    imageSmall = images.small?.url ?: "",
-    imageRegular = images.regular?.url ?: "",
-    imageLarge = images.large?.url ?: "",
-    thumbnail = BitmapUtils.getBitmapFromImageUrl(images.small?.url)
+    thumbnail = BitmapUtils.getBitmapFromImageUrl(images.small?.url),
+    image = BitmapUtils.getBitmapFromImageUrl(images.regular?.url)
 )

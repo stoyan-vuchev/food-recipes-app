@@ -20,11 +20,8 @@ fun RecipeResponse.toRecipeEntity(timestamp: Long) = RecipeEntity(
     instructions = instructions?.requireNoNulls()?.distinct() ?: emptyList(),
     source = source,
     url = url,
-    imageThumbnail = images.thumbnail?.url ?: "",
-    imageSmall = images.small?.url ?: "",
-    imageRegular = images.regular?.url ?: "",
-    imageLarge = images.large?.url ?: "",
-    thumbnail = BitmapUtils.getByteArrayFromImageUrl(images.small?.url)
+    thumbnail = BitmapUtils.getByteArrayFromImageUrl(images.small?.url),
+    image = BitmapUtils.getByteArrayFromImageUrl(images.regular?.url)
 )
 
 fun RecipeResponse.toRecipeEntity(
@@ -42,9 +39,6 @@ fun RecipeResponse.toRecipeEntity(
     instructions = instructions?.requireNoNulls()?.distinct() ?: emptyList(),
     source = source,
     url = url,
-    imageThumbnail = images.thumbnail?.url ?: "",
-    imageSmall = images.small?.url ?: "",
-    imageRegular = images.regular?.url ?: "",
-    imageLarge = images.large?.url ?: "",
-    thumbnail = BitmapUtils.getByteArrayFromImageUrl(images.small?.url)
+    thumbnail = BitmapUtils.getByteArrayFromImageUrl(images.small?.url),
+    image = BitmapUtils.getByteArrayFromImageUrl(images.regular?.url)
 )

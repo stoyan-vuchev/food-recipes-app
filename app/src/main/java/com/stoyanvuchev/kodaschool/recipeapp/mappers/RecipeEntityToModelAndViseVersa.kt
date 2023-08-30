@@ -18,11 +18,8 @@ fun RecipeEntity.toRecipeModel() = RecipeModel(
     instructions = instructions,
     source = source,
     url = url,
-    imageThumbnail = imageThumbnail,
-    imageSmall = imageSmall,
-    imageRegular = imageRegular,
-    imageLarge = imageLarge,
-    thumbnail = thumbnail?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
+    thumbnail = thumbnail?.let { BitmapFactory.decodeByteArray(it, 0, it.size) },
+    image = image?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 )
 
 fun RecipeModel.toRecipeEntity() = RecipeEntity(
@@ -38,9 +35,6 @@ fun RecipeModel.toRecipeEntity() = RecipeEntity(
     instructions = instructions,
     source = source,
     url = url,
-    imageThumbnail = imageThumbnail,
-    imageSmall = imageSmall,
-    imageRegular = imageRegular,
-    imageLarge = imageLarge,
-    thumbnail = thumbnail.toByteArray()
+    thumbnail = thumbnail.toByteArray(),
+    image = image.toByteArray()
 )
