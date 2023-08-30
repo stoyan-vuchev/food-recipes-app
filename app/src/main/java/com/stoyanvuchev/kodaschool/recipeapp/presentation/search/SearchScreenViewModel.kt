@@ -81,13 +81,19 @@ class SearchScreenViewModel @Inject constructor(
         withContext(Dispatchers.Default) {
             when (result) {
 
-                is Result.Loading -> _screenState.update { it.copy(isSearching = true) }
+                is Result.Loading -> _screenState.update {
+                    it.copy(
+                        isSearching = true,
+                        isSearchComplete = false
+                    )
+                }
 
                 is Result.Success -> _screenState.update {
                     it.copy(
                         error = UiString.EmptyString,
                         searchResults = result.data,
-                        isSearching = false
+                        isSearching = false,
+                        isSearchComplete = true
                     )
                 }
 
@@ -95,7 +101,8 @@ class SearchScreenViewModel @Inject constructor(
                     it.copy(
                         searchResults = emptyList(),
                         error = result.error,
-                        isSearching = false
+                        isSearching = false,
+                        isSearchComplete = true
                     )
                 }
 

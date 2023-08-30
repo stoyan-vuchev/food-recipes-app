@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -35,6 +36,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.LocalPaddingValu
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.empty_states.EmptyStateText
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.fadingEdges
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItemLoadingShimmer
@@ -205,6 +207,24 @@ fun SearchScreen(
                 }
 
             } else {
+
+                if (screenState.searchResults.isEmpty() && screenState.isSearchComplete) {
+
+                    item(
+                        key = "empty_state_list_item",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+
+                        EmptyStateText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 128.dp),
+                            text = stringResource(id = R.string.search_screen_list_empty_state_text)
+                        )
+
+                    }
+
+                }
 
                 items(
                     items = screenState.searchResults,

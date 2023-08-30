@@ -7,6 +7,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.theme.FoodRecipesTheme
 import com.stoyanvuchev.kodaschool.recipeapp.presentation.MainActivityNavHost
+import com.stoyanvuchev.responsive_scaffold.ProvideWindowSizeClass
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +21,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            FoodRecipesTheme { MainActivityNavHost(navController = navController) }
+            FoodRecipesTheme {
+                ProvideWindowSizeClass {
+                    MainActivityNavHost(navController = navController)
+                }
+            }
         }
 
     }

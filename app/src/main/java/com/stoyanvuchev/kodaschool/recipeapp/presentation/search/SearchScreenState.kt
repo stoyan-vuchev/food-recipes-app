@@ -8,6 +8,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.domain.model.RecipeModel
 @Stable
 data class SearchScreenState(
     val isSearching: Boolean = false,
+    val isSearchComplete: Boolean = false,
     val category: RecipesCategory = RecipesCategory.All,
     val categories: List<RecipesCategory> = RecipesCategory.categoryList,
     val searchQueryText: String = "",

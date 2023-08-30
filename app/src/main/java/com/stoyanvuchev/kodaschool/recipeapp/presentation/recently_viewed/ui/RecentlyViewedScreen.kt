@@ -37,6 +37,7 @@ import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.NavigationBarScr
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBar
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.CategoryBarItemContent
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.category_bar.rememberCategoryBarState
+import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.empty_states.EmptyStateText
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.fadingEdges
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItem
 import com.stoyanvuchev.kodaschool.recipeapp.core.ui.components.recipe_grid_item.RecipeGridItemLoadingShimmer
@@ -174,6 +175,24 @@ fun RecentlyViewedScreen(
                 }
 
             } else {
+
+                if (screenState.recipes.isEmpty()) {
+
+                    item(
+                        key = "empty_state_list_item",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+
+                        EmptyStateText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 128.dp),
+                            text = stringResource(id = R.string.recently_viewed_screen_list_empty_state_text)
+                        )
+
+                    }
+
+                }
 
                 if (error.isEmpty()) {
 
